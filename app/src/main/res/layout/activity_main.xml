@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Open dashboard (log in once)" />
+            android:text="Open dashboard in Chrome (log in once)" />
 
         <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="How should it know you punched out?" />
 

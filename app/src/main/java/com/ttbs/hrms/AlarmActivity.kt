@@ -76,10 +76,14 @@ class AlarmActivity : AppCompatActivity() {
     /** Hands off to Chrome, where the portal session already exists — no login, no captcha. */
     private fun openDashboardInChrome() {
         val url = Cfg.url(this)
-        val view = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val chrome = Intent(view).setPackage("com.android.chrome")
-        val opened = runCatching { startActivity(chrome) }.isSuccess ||
-            runCatching { startActivity(view) }.isSuccess
+        val opened = runCatching {
+            androidx.browser.customtabs.CustomTabsIntent.Builder()
+                .setShowTitle(true)
+                .build()
+                .launchUrl(this, Uri.parse(url))
+        }.isSuccess || runCatching {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }.isSuccess
         if (!opened) {
             Toast.makeText(this, "No browser found - open the dashboard by hand.", Toast.LENGTH_LONG).show()
         }

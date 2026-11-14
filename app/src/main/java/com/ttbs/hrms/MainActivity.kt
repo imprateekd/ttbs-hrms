@@ -153,7 +153,21 @@ class MainActivity : AppCompatActivity() {
     private fun openDashboard(toast: String? = null) {
         save()
         if (toast != null) Toast.makeText(this, toast, Toast.LENGTH_LONG).show()
-        startActivity(Intent(this, BrowserActivity::class.java))
+        // Chrome Custom Tab: Chrome's engine, so Cloudflare's check passes and the portal
+        // session is the one you already have. A WebView cannot get past that check.
+        val uri = Uri.parse(Cfg.url(this))
+        val opened = runCatching {
+            androidx.browser.customtabs.CustomTabsIntent.Builder()
+                .setShowTitle(true)
+                .build()
+                .launchUrl(this, uri)
+        }.isSuccess
+        if (!opened) {
+            runCatching { startActivity(Intent(Intent.ACTION_VIEW, uri)) }
+                .onFailure {
+                    Toast.makeText(this, "No browser found to open the portal.", Toast.LENGTH_LONG).show()
+                }
+        }
     }
 
     private fun refreshStatus() {
