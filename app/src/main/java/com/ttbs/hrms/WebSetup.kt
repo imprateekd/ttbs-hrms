@@ -8,6 +8,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewFeature
 
 /** Shared WebView configuration: desktop rendering, geolocation, persistent cookies. */
 object WebSetup {
@@ -31,12 +33,15 @@ object WebSetup {
         s.builtInZoomControls = true
         s.displayZoomControls = false
         s.supportMultipleWindows()
-        // Spoofing the UA alone is what makes Cloudflare Turnstile fail: the WebView still
-        // reports Sec-CH-UA-Platform: Android, and that contradiction reads as a bot. So the
-        // spoof is opt-in, and off by default.
-        if (desktop) {
-            s.userAgentString = DESKTOP_UA
-        }
+        // WebView announces itself with "; wv" and "Version/4.0", and bot checks treat that as a
+        // red flag. Strip only those markers so the platform stays consistent with what the
+        // engine actually reports; a full desktop spoof stays opt-in.
+        val stock = s.userAgentString
+        val cleaned = stock
+            .replace("; wv", "")
+            .replace(" wv", "")
+            .replace("Version/4.0 ", "")
+        s.userAgentString = if (desktop) DESKTOP_UA else cleaned
 
         CookieManager.getInstance().setAcceptCookie(true)
         CookieManager.getInstance().setAcceptThirdPartyCookies(web, true)
@@ -51,7 +56,43 @@ object WebSetup {
             }
         }
         web.webViewClient = WebViewClient()
+
+        // Turnstile reads navigator.webdriver and navigator.userAgentData; WebView reports the
+        // first as true-ish and lacks the second, so fill them in before page scripts run.
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
+            runCatching {
+                WebViewCompat.addDocumentStartJavaScript(web, ANTI_DETECT_JS, setOf("*"))
+            }
+        }
     }
+
+    private val ANTI_DETECT_JS = """
+(function(){
+  try { Object.defineProperty(navigator, 'webdriver', { get: function(){ return false; } }); } catch (e) {}
+  try {
+    if (!navigator.userAgentData) {
+      var brands = [
+        { brand: 'Chromium', version: '121' },
+        { brand: 'Google Chrome', version: '121' },
+        { brand: 'Not A(Brand', version: '99' }
+      ];
+      Object.defineProperty(navigator, 'userAgentData', {
+        get: function(){
+          return {
+            brands: brands,
+            mobile: true,
+            platform: 'Android',
+            getHighEntropyValues: function(){
+              return Promise.resolve({ brands: brands, mobile: true, platform: 'Android', platformVersion: '13' });
+            },
+            toJSON: function(){ return { brands: brands, mobile: true, platform: 'Android' }; }
+          };
+        }
+      });
+    }
+  } catch (e) {}
+})();
+"""
 
     fun flush() {
         runCatching { CookieManager.getInstance().flush() }
