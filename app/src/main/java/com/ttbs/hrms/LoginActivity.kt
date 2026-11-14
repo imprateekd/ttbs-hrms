@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -36,7 +37,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var cbSave: CheckBox
     private lateinit var tvSig: TextView
     private lateinit var sigRule: View
-    private lateinit var strip: View
     private lateinit var tvPin: TextView
     private lateinit var tvPout: TextView
     private lateinit var tvActive: TextView
@@ -72,7 +72,6 @@ class LoginActivity : AppCompatActivity() {
         cbSave = findViewById(R.id.cbSave)
         tvSig = findViewById(R.id.tvSig)
         sigRule = findViewById(R.id.sigRule)
-        strip = findViewById(R.id.strip)
         tvPin = findViewById(R.id.tvPin)
         tvPout = findViewById(R.id.tvPout)
         tvActive = findViewById(R.id.tvActive)
@@ -173,8 +172,6 @@ class LoginActivity : AppCompatActivity() {
         val pin = Cfg.punchIn(this)
         val pout = Cfg.punchOut(this)
         val has = pin.isNotBlank()
-        // the card is always on screen: with no readings yet it shows --:-- rather than vanishing
-        strip.visibility = View.VISIBLE
 
         tvPin.text = if (has) Fmt.time(this, pin) else "--:--"
         tvPout.text = if (pout.isNotBlank()) Fmt.time(this, pout) else "--:--"
