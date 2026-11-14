@@ -61,6 +61,16 @@ object Cfg {
         sp(c).edit().putString("pass", enc).apply()
     }
 
+    fun punchIn(c: Context): String = sp(c).getString("punchIn", "") ?: ""
+    fun setPunchIn(c: Context, v: String) { sp(c).edit().putString("punchIn", v).apply() }
+
+    fun punchOut(c: Context): String = sp(c).getString("punchOut", "") ?: ""
+    fun setPunchOut(c: Context, v: String) { sp(c).edit().putString("punchOut", v).apply() }
+
+    /** Clears yesterday's punch-out when a new day starts. */
+    fun punchDay(c: Context): String = sp(c).getString("punchDay", "") ?: ""
+    fun setPunchDay(c: Context, v: String) { sp(c).edit().putString("punchDay", v).apply() }
+
     fun lastResult(c: Context): String = sp(c).getString("lastResult", "") ?: ""
     fun setLastResult(c: Context, v: String) {
         val stamp = java.text.SimpleDateFormat("dd MMM, h:mm a", java.util.Locale.getDefault())
