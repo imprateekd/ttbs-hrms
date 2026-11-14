@@ -3,5 +3,5 @@
     <string name="app_name">TTBS-HRMS</string>
     <string name="alarm_channel">Punch-out alarm</string>
     <string name="status_channel">Status</string>
-    <string name="reader_description">Reads the punch times shown on the TTBS HRMS page in your browser, so this app can show them on its home screen and remind you to punch out. It never types, taps or changes anything on the page.</string>
+    <string name="reader_description">Fills the TTBS HRMS login form in your browser and reads the punch times shown on that page, so this app can sign you in and show your attendance.</string>
 </resources>
