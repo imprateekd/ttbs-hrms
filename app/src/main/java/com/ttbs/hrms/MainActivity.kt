@@ -30,19 +30,10 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.btnInstagram).setOnClickListener {
             openLink("https://instagram.com/imprateekd")
         }
-        // WhatsApp usernames have no public link format I can rely on, so this opens
-        // WhatsApp itself and tells you the handle rather than guessing a chat URL.
         findViewById<View>(R.id.btnWhatsapp).setOnClickListener {
-            val opened = runCatching {
-                startActivity(
-                    Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone="))
-                )
-            }.isSuccess
-            if (!opened) {
-                runCatching { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.whatsapp"))) }
-            }
-            Toast.makeText(this, "WhatsApp: @imprateekd", Toast.LENGTH_LONG).show()
+            openLink("https://wa.me/919039882044")
         }
+
         findViewById<View>(R.id.rowResetBreak).setOnClickListener { confirmResetBreak() }
 
         // I1: the value itself opens a keypad; the +/- buttons stay for nudges

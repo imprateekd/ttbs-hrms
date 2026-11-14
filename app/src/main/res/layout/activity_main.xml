@@ -183,59 +183,116 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="12dp">
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingStart="14dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="14dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.3"
+                    android:text="DESIGNED &amp; BUILT BY"
+                    android:textColor="#8FA6C8"
+                    android:textSize="7sp" />
 
                 <ImageView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:contentDescription="Prateek"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_marginBottom="7dp"
+                    android:contentDescription="Prateek D."
                     android:src="@drawable/developer" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="11dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:fontFamily="serif"
+                    android:text="Prateek D."
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="italic" />
 
-                    <TextView
+                <View
+                    android:layout_width="70dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="7dp"
+                    android:background="@drawable/bg_gold_rule" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.14"
+                    android:text="@imprateekd"
+                    android:textColor="#8FA6C8"
+                    android:textSize="8sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/btnInstagram"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Prateek"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:background="@drawable/bg_chip"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="11dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="11dp"
+                        android:paddingBottom="5dp">
 
-                    <TextView
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:contentDescription="Instagram"
+                            android:src="@drawable/ic_instagram" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="Instagram"
+                            android:textColor="#CFE0FF"
+                            android:textSize="8sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btnWhatsapp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:fontFamily="monospace"
-                        android:text="@imprateekd"
-                        android:textColor="#8FA6C8"
-                        android:textSize="9sp" />
+                        android:layout_marginStart="7dp"
+                        android:background="@drawable/bg_chip"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="11dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="11dp"
+                        android:paddingBottom="5dp">
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:contentDescription="WhatsApp"
+                            android:src="@drawable/ic_whatsapp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="WhatsApp"
+                            android:textColor="#CFE0FF"
+                            android:textSize="8sp" />
+                    </LinearLayout>
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/btnInstagram"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:background="@drawable/bg_icon_button"
-                    android:contentDescription="Instagram"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_instagram" />
-
-                <ImageView
-                    android:id="@+id/btnWhatsapp"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_marginStart="7dp"
-                    android:background="@drawable/bg_icon_button"
-                    android:contentDescription="WhatsApp"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_whatsapp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -244,7 +301,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:gravity="center"
-            android:text="TTBS-HRMS 3.4 · by Prateek"
+            android:text="TTBS-HRMS 3.6 · by Prateek D."
             android:textColor="#3F5673"
             android:textSize="10sp" />
     </LinearLayout>
