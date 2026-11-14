@@ -30,6 +30,9 @@ jobs:
           yes | sdkmanager "platforms;android-37" 2>&1 | tail -5 || \
           yes | sdkmanager --channel=3 "platforms;android-37" 2>&1 | tail -5 || true
 
+      - name: Show available NDKs
+        run: ls -1 $ANDROID_HOME/ndk 2>/dev/null || echo "no NDK preinstalled"
+
       - name: Build the debug APK
         run: gradle :app:assembleRelease --no-daemon --stacktrace
 

@@ -3,6 +3,12 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace 'com.ttbs.hrms'
+
+    // Use whichever NDK the build machine has, so native libraries get stripped.
+    def ndkRoot = System.getenv("ANDROID_HOME") ? new File(System.getenv("ANDROID_HOME"), "ndk") : null
+    if (ndkRoot != null && ndkRoot.exists() && ndkRoot.listFiles()?.length) {
+        ndkVersion ndkRoot.listFiles().collect { it.name }.sort().last()
+    }
     compileSdk 34
 
     defaultConfig {
