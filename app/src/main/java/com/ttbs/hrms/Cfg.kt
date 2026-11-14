@@ -71,6 +71,12 @@ object Cfg {
     fun punchDay(c: Context): String = sp(c).getString("punchDay", "") ?: ""
     fun setPunchDay(c: Context, v: String) { sp(c).edit().putString("punchDay", v).apply() }
 
+    fun loginUrl(c: Context): String = sp(c).getString("loginUrl", "https://technotask.net/ttbs_hrms/") ?: ""
+    fun setLoginUrl(c: Context, v: String) { sp(c).edit().putString("loginUrl", v.trim()).apply() }
+
+    fun lastRead(c: Context): String = sp(c).getString("lastRead", "") ?: ""
+    fun setLastRead(c: Context, v: String) { sp(c).edit().putString("lastRead", v).apply() }
+
     fun lastResult(c: Context): String = sp(c).getString("lastResult", "") ?: ""
     fun setLastResult(c: Context, v: String) {
         val stamp = java.text.SimpleDateFormat("dd MMM, h:mm a", java.util.Locale.getDefault())

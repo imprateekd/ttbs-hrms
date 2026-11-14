@@ -192,6 +192,20 @@
             android:textAllCaps="false" />
 
         <Button
+            android:id="@+id/sheetReader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Read punch times from Chrome (screen reader)"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/sheetLoginTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Native login test"
+            android:textAllCaps="false" />
+
+        <Button
             android:id="@+id/sheetAlarm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

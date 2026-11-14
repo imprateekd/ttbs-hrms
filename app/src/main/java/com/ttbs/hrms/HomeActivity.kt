@@ -77,8 +77,13 @@ class HomeActivity : AppCompatActivity() {
             pin != "--:--:--" -> "Still punched in. Punch out before you leave."
             else -> "Tap Menu to open the portal or record your punch-out."
         }
+        val read = Cfg.lastRead(this)
         val last = Cfg.lastResult(this)
-        findViewById<TextView>(R.id.tvLastCheck).text = if (last.isBlank()) "" else "Last check: $last"
+        val parts = mutableListOf<String>()
+        if (read.isNotBlank()) parts.add("Read from Chrome at $read")
+        if (last.isNotBlank()) parts.add("Last check: $last")
+        if (!readerEnabled()) parts.add("Screen reader off — enable it from the Menu")
+        findViewById<TextView>(R.id.tvLastCheck).text = parts.joinToString(" · ")
     }
 
     private fun markPunchedOut() {
@@ -88,6 +93,13 @@ class HomeActivity : AppCompatActivity() {
         if (Cfg.punchIn(this).isBlank()) Cfg.setPunchIn(this, "09:12:33")
         refreshStrip()
         Toast.makeText(this, "Punch-out recorded at $time", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun readerEnabled(): Boolean {
+        val enabled = android.provider.Settings.Secure.getString(
+            contentResolver, android.provider.Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+        ) ?: return false
+        return enabled.contains(packageName, ignoreCase = true)
     }
 
     private fun showMenu() {
@@ -111,6 +123,17 @@ class HomeActivity : AppCompatActivity() {
         view.findViewById<Button>(R.id.sheetPunch).setOnClickListener {
             sheet.dismiss()
             markPunchedOut()
+        }
+        view.findViewById<Button>(R.id.sheetReader).setOnClickListener {
+            sheet.dismiss()
+            runCatching {
+                startActivity(Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            }
+            Toast.makeText(this, "Turn on TTBS-HRMS screen reader", Toast.LENGTH_LONG).show()
+        }
+        view.findViewById<Button>(R.id.sheetLoginTest).setOnClickListener {
+            sheet.dismiss()
+            startActivity(Intent(this, LoginTestActivity::class.java))
         }
         view.findViewById<Button>(R.id.sheetAlarm).setOnClickListener {
             sheet.dismiss()
