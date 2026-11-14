@@ -40,21 +40,6 @@ class GeckoBrowserActivity : AppCompatActivity() {
         runtime = GeckoShell.runtime(this)
         val s = GeckoShell.newSession(this)
 
-        s.permissionDelegate = object : GeckoSession.PermissionDelegate {
-            override fun onContentPermissionRequest(
-                session: GeckoSession,
-                uri: String?,
-                type: Int,
-                callback: GeckoSession.PermissionDelegate.Callback
-            ) {
-                if (type == GeckoSession.PermissionDelegate.PERMISSION_GEOLOCATION) {
-                    callback.grant()
-                } else {
-                    callback.reject()
-                }
-            }
-        }
-
         gecko.setSession(s)
         s.loadUri(Cfg.url(this))
         session = s

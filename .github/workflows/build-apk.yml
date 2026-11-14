@@ -39,3 +39,11 @@ jobs:
           name: TTBS-HRMS-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
+      - name: Inspect GeckoView permission API
+        if: always()
+        run: |
+          AAR=$(find ~/.gradle/caches -name "geckoview-arm64-v8a-121*.aar" | head -1)
+          echo "aar: $AAR"
+          mkdir -p /tmp/gv && unzip -o -q "$AAR" classes.jar -d /tmp/gv
+          javap -classpath /tmp/gv/classes.jar 'org.mozilla.geckoview.GeckoSession$PermissionDelegate' | head -30
