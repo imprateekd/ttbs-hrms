@@ -42,13 +42,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // already set up: go straight to the status screen
-        if (Cfg.username(this).isNotBlank() && Cfg.password(this).isNotBlank()) {
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
-            return
-        }
-
         setContentView(R.layout.activity_login)
         etUser = findViewById(R.id.etUser)
         etPass = findViewById(R.id.etPass)
@@ -71,7 +64,17 @@ class LoginActivity : AppCompatActivity() {
         etUser.addTextChangedListener(watcher)
         etPass.addTextChangedListener(watcher)
 
+        if (Cfg.username(this).isNotBlank()) {
+            etUser.setText(Cfg.username(this))
+            etPass.setText(Cfg.password(this))
+            saveRowShown = true
+            saveRow.visibility = View.VISIBLE
+        }
+
         findViewById<Button>(R.id.btnSignIn).setOnClickListener { signIn() }
+        findViewById<TextView>(R.id.tvSettingsLink).setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
         findViewById<Button>(R.id.btnReaderHelp).setOnClickListener { ReaderHelp.show(this) }
 
         typeSignature()
@@ -111,8 +114,6 @@ class LoginActivity : AppCompatActivity() {
             Cfg.setAutoLogin(this, false)
         }
 
-        Cfg.setPendingReturn(this, true)
-        startActivity(Intent(this, HomeActivity::class.java))
         openPortal()
         finish()
     }

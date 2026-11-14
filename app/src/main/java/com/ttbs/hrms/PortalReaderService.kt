@@ -59,33 +59,8 @@ class PortalReaderService : AccessibilityService() {
         Cfg.setPunchDay(this, SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
         Cfg.setLastRead(this, SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()))
 
-        // The times are in: bring the app back to the front instead of leaving the user in Chrome.
-        if (Cfg.pendingReturn(this)) {
-            Cfg.setPendingReturn(this, false)
-            bringAppForward()
-        }
     }
 
-    /** Only possible with the "display over other apps" permission, which the app asks for. */
-    private fun bringAppForward() {
-        if (!Settings.canDrawOverlays(this)) return
-        runCatching {
-            startActivity(
-                Intent(this, HomeActivity::class.java).addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK or
-                        Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
-                )
-            )
-        }
-    }
-
-    /**
-     * Option 2: fill the login form and press "Sign In to Account" for you.
-     *
-     * It only touches fields and one button on a page you already have open. Chrome still runs
-     * the Cloudflare check and passes it on its own — nothing here tries to solve or skip it.
-     */
     private fun maybeAutoLogin(root: AccessibilityNodeInfo, pageText: String) {
         if (!Cfg.autoLogin(this)) return
         val user = Cfg.username(this)
@@ -111,7 +86,6 @@ class PortalReaderService : AccessibilityService() {
         val button = findClickable(root, "Sign In to Account", 0)
             ?: findClickable(root, "Sign In", 0)
         if (button != null) {
-            Cfg.setPendingReturn(this, true)
             button.performAction(AccessibilityNodeInfo.ACTION_CLICK)
             lastLoginAttempt = now
             Cfg.setLastRead(
