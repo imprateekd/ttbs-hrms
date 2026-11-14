@@ -28,7 +28,7 @@
             android:id="@+id/tvHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log in, then save a sample of this page from TTBS-HRMS settings."
+            android:text="build 3 - log in, then save a sample from TTBS-HRMS settings."
             android:textColor="@color/muted"
             android:textSize="12sp" />
 
