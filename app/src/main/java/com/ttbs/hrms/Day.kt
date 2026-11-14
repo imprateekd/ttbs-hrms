@@ -27,6 +27,8 @@ object Day {
         val m = parts[1].toIntOrNull() ?: return null
         val s = parts.getOrNull(2)?.toIntOrNull() ?: 0
         if (h !in 0..23 || m !in 0..59 || s !in 0..59) return null
+        // The portal shows 00:00:00 for "not punched out yet" - that is not midnight.
+        if (h == 0 && m == 0 && s == 0) return null
         return (h * 3600 + m * 60 + s).toLong()
     }
 

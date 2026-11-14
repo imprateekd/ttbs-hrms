@@ -55,8 +55,9 @@ class PortalReaderService : AccessibilityService() {
         if (pin == null && pout == null) return
 
         Cfg.ensureToday(this)
-        if (pin != null) Cfg.setPunchIn(this, pin)
-        if (pout != null) Cfg.setPunchOut(this, pout)
+        val zero = Regex("^0+:0+(:0+)?$")
+        if (pin != null) Cfg.setPunchIn(this, if (zero.matches(pin)) "" else pin)
+        if (pout != null) Cfg.setPunchOut(this, if (zero.matches(pout)) "" else pout)
         Cfg.setPunchDay(this, SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
         Cfg.setLastRead(this, SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()))
 

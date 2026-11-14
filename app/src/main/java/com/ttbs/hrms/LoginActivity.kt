@@ -189,12 +189,14 @@ class LoginActivity : AppCompatActivity() {
     /** Reads the portal and comes straight back, without leaving you signed in on this screen. */
     private fun checkLoginTime() {
         if (!validateFields()) return
-        if (!Cfg.autoLogin(this)) {
+        // The check needs the details stored so the service can type them into Chrome.
+        // Save them here rather than demanding a previous Sign In.
+        if (!cbSave.isChecked) {
             Toast.makeText(this, "Tick Save details so the app can fill your login", Toast.LENGTH_LONG).show()
             return
         }
         withPermissions {
-            Cfg.setPendingReturn(this, true)
+            saveOrClear()
             openPortal()
         }
     }
