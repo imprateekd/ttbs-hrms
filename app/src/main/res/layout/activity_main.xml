@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paper"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TTBS-HRMS"
+            android:textColor="@color/ink"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Watches your TTBS HRMS punch-out and shouts if you forget."
+            android:textColor="@color/muted"
+            android:textSize="13sp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchEnabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Reminder is ON"
+            android:textColor="@color/ink"
+            android:textSize="16sp" />
+
+        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Schedule" />
+
+        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Punch-out deadline" />
+
+        <Button
+            android:id="@+id/btnTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="6:00 PM" />
+
+        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nag again every (minutes)" />
+
+        <EditText
+            android:id="@+id/etRepeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="3"
+            android:text="2" />
+
+        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dashboard" />
+
+        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="HRMS URL" />
+
+        <EditText
+            android:id="@+id/etUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"
+            android:text="https://technotask.net/ttbs_hrms/index.php/EMPLOYEE/Dashboard/" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchDesktop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Desktop mode (required by this HRMS)"
+            android:textColor="@color/ink" />
+
+        <Button
+            android:id="@+id/btnOpenDashboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Open dashboard (log in once)" />
+
+        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="How should it know you punched out?" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TTBS-HRMS reads the WORK TIME card on your dashboard: a real Punch Out time means you are done, Punch Out 00:00:00 with a Punch In time means it should ring. The rules below are optional overrides, only needed if the dashboard layout changes."
+            android:textColor="@color/muted"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnSaveInSample"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Save current page as: STILL PUNCHED IN" />
+
+        <Button
+            android:id="@+id/btnSaveOutSample"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Save current page as: PUNCHED OUT" />
+
+        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Optional: text that means PUNCHED OUT (regex)" />
+
+        <EditText
+            android:id="@+id/etOutRegex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g. Punch Out Time:"
+            android:inputType="text" />
+
+        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Optional: text that means STILL PUNCHED IN (regex)" />
+
+        <EditText
+            android:id="@+id/etInRegex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g. Punch Out"
+            android:inputType="text" />
+
+        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Auto sign-in (optional)" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchAutoLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fill my username and password automatically"
+            android:textColor="@color/ink" />
+
+        <EditText
+            android:id="@+id/etUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:hint="Username / employee ID"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password (stored encrypted on this phone)"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Only works if your portal has no OTP/captcha on every login. If it does, leave this off — the app will tell you when the session expires."
+            android:textColor="@color/muted"
+            android:textSize="12sp" />
+
+        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Permissions" />
+
+        <Button
+            android:id="@+id/btnNotif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Allow notifications" />
+
+        <Button
+            android:id="@+id/btnExact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Allow exact alarms" />
+
+        <Button
+            android:id="@+id/btnOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Allow display over other apps (needed to pop the alarm)" />
+
+        <Button
+            android:id="@+id/btnBattery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Ignore battery optimisation" />
+
+        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Test" />
+
+        <Button
+            android:id="@+id/btnCheckNow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Check my punch-out status right now" />
+
+        <Button
+            android:id="@+id/btnSchedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Arm the alarm for the next deadline" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Stop / disarm" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="#FFFFFF"
+            android:padding="12dp"
+            android:textColor="@color/ink"
+            android:textIsSelectable="true"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+</ScrollView>
