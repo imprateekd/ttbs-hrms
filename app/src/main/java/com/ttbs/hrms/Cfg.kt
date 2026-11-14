@@ -74,6 +74,9 @@ object Cfg {
     fun loginUrl(c: Context): String = sp(c).getString("loginUrl", "https://technotask.net/ttbs_hrms/") ?: ""
     fun setLoginUrl(c: Context, v: String) { sp(c).edit().putString("loginUrl", v.trim()).apply() }
 
+    fun pendingReturn(c: Context): Boolean = sp(c).getBoolean("pendingReturn", false)
+    fun setPendingReturn(c: Context, v: Boolean) { sp(c).edit().putBoolean("pendingReturn", v).apply() }
+
     fun lastRead(c: Context): String = sp(c).getString("lastRead", "") ?: ""
     fun setLastRead(c: Context, v: String) { sp(c).edit().putString("lastRead", v).apply() }
 

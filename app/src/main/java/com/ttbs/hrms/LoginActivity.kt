@@ -111,6 +111,7 @@ class LoginActivity : AppCompatActivity() {
             Cfg.setAutoLogin(this, false)
         }
 
+        Cfg.setPendingReturn(this, true)
         startActivity(Intent(this, HomeActivity::class.java))
         openPortal()
         finish()

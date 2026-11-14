@@ -1,6 +1,8 @@
 package com.ttbs.hrms
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Intent
+import android.provider.Settings
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -37,6 +39,11 @@ class PortalReaderService : AccessibilityService() {
         val sb = StringBuilder()
         collect(root, sb, 0)
         val text = sb.toString()
+
+        // Login first. The login page contains no "Punch" text, so calling this after the
+        // dashboard guard below meant it was never reached - which is why the fields stayed empty.
+        maybeAutoLogin(root, text)
+
         if (text == lastSnapshot) return
         lastSnapshot = text
 
@@ -47,12 +54,30 @@ class PortalReaderService : AccessibilityService() {
         val pout = timeAfter(text, Regex("Punch\\s*Out\\b", RegexOption.IGNORE_CASE), null)
         if (pin == null && pout == null) return
 
-        maybeAutoLogin(root, text)
-
         if (pin != null) Cfg.setPunchIn(this, pin)
         if (pout != null) Cfg.setPunchOut(this, pout)
         Cfg.setPunchDay(this, SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
         Cfg.setLastRead(this, SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()))
+
+        // The times are in: bring the app back to the front instead of leaving the user in Chrome.
+        if (Cfg.pendingReturn(this)) {
+            Cfg.setPendingReturn(this, false)
+            bringAppForward()
+        }
+    }
+
+    /** Only possible with the "display over other apps" permission, which the app asks for. */
+    private fun bringAppForward() {
+        if (!Settings.canDrawOverlays(this)) return
+        runCatching {
+            startActivity(
+                Intent(this, HomeActivity::class.java).addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+                )
+            )
+        }
     }
 
     /**
@@ -86,6 +111,7 @@ class PortalReaderService : AccessibilityService() {
         val button = findClickable(root, "Sign In to Account", 0)
             ?: findClickable(root, "Sign In", 0)
         if (button != null) {
+            Cfg.setPendingReturn(this, true)
             button.performAction(AccessibilityNodeInfo.ACTION_CLICK)
             lastLoginAttempt = now
             Cfg.setLastRead(
