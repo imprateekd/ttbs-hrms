@@ -79,6 +79,16 @@ class LoginActivity : AppCompatActivity() {
         breakFooter = findViewById(R.id.breakFooter)
 
         btnBreak.setOnClickListener { toggleBreak() }
+        // C3: tapping the times flips the whole app between 12 and 24 hour
+        findViewById<View>(R.id.timerRow).setOnClickListener {
+            Cfg.setHour24(this, !Cfg.hour24(this))
+            refreshStrip()
+            Toast.makeText(
+                this,
+                if (Cfg.hour24(this)) "24-hour time" else "12-hour time",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
         findViewById<Button>(R.id.btnOnboardSet).setOnClickListener { askPunchOutTime() }
         findViewById<TextView>(R.id.btnOnboardClose).setOnClickListener {
             Cfg.setOnboarded(this, true)

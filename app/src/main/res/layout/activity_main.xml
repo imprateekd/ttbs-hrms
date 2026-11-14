@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F6FB"
+    android:background="#08132A"
     android:fillViewport="true">
 
     <LinearLayout
@@ -14,205 +14,164 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="14dp">
 
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:contentDescription="Back"
+                android:padding="6dp"
+                android:src="@drawable/ic_back" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="Settings"
-                android:textColor="#12233B"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <!-- TODAY -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="6dp"
-            android:letterSpacing="0.14"
-            android:text="TODAY"
-            android:textColor="#8B98AB"
-            android:textSize="9sp" />
+        <TextView style="@style/SectHead" android:text="TODAY" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:background="#FFFFFF"
-            android:orientation="vertical">
+        <LinearLayout style="@style/SectCard">
 
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Punch in" />
-                <TextView android:id="@+id/tvSetPin" style="@style/SettingValue" android:text="--:--:--" />
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Punch in" />
+                <TextView android:id="@+id/tvSetPin" style="@style/DValue" android:text="--:--" />
             </LinearLayout>
 
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Punch out" />
-                <TextView android:id="@+id/tvSetPout" style="@style/SettingValue" android:text="--:--:--" />
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Punch out" />
+                <TextView android:id="@+id/tvSetPout" style="@style/DValue" android:text="--:--" />
             </LinearLayout>
 
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Active Hours" />
-                <TextView android:id="@+id/tvSetActive" style="@style/SettingValue" android:text="--:--:--" />
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Active Hours" />
+                <TextView android:id="@+id/tvSetActive" style="@style/DValue" android:text="00:00:00" />
             </LinearLayout>
 
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Break used" />
-                <TextView android:id="@+id/tvSetBreak" style="@style/SettingValue" android:text="00:00:00" />
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Break used" />
+                <TextView android:id="@+id/tvSetBreak" style="@style/DValue" android:text="00:00:00" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/rowResetBreak"
-                style="@style/SettingRow"
-                android:background="?android:attr/selectableItemBackground">
-
-                <TextView
-                    style="@style/SettingLabel"
-                    android:text="Reset break counter"
-                    android:textColor="#B3261E" />
+            <LinearLayout android:id="@+id/rowResetBreak" style="@style/DRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/DLabel" android:text="Reset break counter" android:textColor="#FF9A9A" />
             </LinearLayout>
         </LinearLayout>
 
         <!-- REMINDERS -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="6dp"
-            android:letterSpacing="0.14"
-            android:text="REMINDERS"
-            android:textColor="#8B98AB"
-            android:textSize="9sp" />
+        <TextView style="@style/SectHead" android:text="REMINDERS" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:background="#FFFFFF"
-            android:orientation="vertical">
+        <LinearLayout style="@style/SectCard">
 
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Reminder" />
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Reminder" />
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchEnabled"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Punch-out deadline" />
-                <Button android:id="@+id/btnDeadlineMinus" style="@style/StepBtn" android:text="−" />
-                <TextView android:id="@+id/tvDeadline" style="@style/SettingValue" android:text="18:00" />
-                <Button android:id="@+id/btnDeadlinePlus" style="@style/StepBtn" android:text="+" />
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Punch-out deadline" />
+                <Button android:id="@+id/btnDeadlineMinus" style="@style/DStep" android:text="−" />
+                <TextView
+                    android:id="@+id/tvDeadline"
+                    style="@style/DValue"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:text="6:00 PM" />
+                <Button android:id="@+id/btnDeadlinePlus" style="@style/DStep" android:text="+" />
             </LinearLayout>
 
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Nag again" />
-                <Button android:id="@+id/btnRepeatMinus" style="@style/StepBtn" android:text="−" />
-                <TextView android:id="@+id/tvRepeat" style="@style/SettingValue" android:text="2m" />
-                <Button android:id="@+id/btnRepeatPlus" style="@style/StepBtn" android:text="+" />
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Nag again" />
+                <Button android:id="@+id/btnRepeatMinus" style="@style/DStep" android:text="−" />
+                <TextView
+                    android:id="@+id/tvRepeat"
+                    style="@style/DValue"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:text="2m" />
+                <Button android:id="@+id/btnRepeatPlus" style="@style/DStep" android:text="+" />
             </LinearLayout>
 
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Time format" />
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Break limit" />
+                <Button android:id="@+id/btnBreakMinus" style="@style/DStep" android:text="−" />
+                <TextView
+                    android:id="@+id/tvBreakLimit"
+                    style="@style/DValue"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:text="45m" />
+                <Button android:id="@+id/btnBreakPlus" style="@style/DStep" android:text="+" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Time format" />
 
                 <Button
                     android:id="@+id/btn12"
-                    style="@style/FmtBtn"
+                    style="@style/DFmt"
                     android:text="12h" />
 
                 <Button
                     android:id="@+id/btn24"
-                    style="@style/FmtBtn"
+                    style="@style/DFmt"
                     android:text="24h" />
-            </LinearLayout>
-
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Break limit (per day)" />
-                <Button android:id="@+id/btnBreakMinus" style="@style/StepBtn" android:text="−" />
-                <TextView android:id="@+id/tvBreakLimit" style="@style/SettingValue" android:text="45m" />
-                <Button android:id="@+id/btnBreakPlus" style="@style/StepBtn" android:text="+" />
             </LinearLayout>
         </LinearLayout>
 
         <!-- ACCESS -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="6dp"
-            android:letterSpacing="0.14"
-            android:text="ACCESS"
-            android:textColor="#8B98AB"
-            android:textSize="9sp" />
+        <TextView style="@style/SectHead" android:text="ACCESS" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:background="#FFFFFF"
-            android:orientation="vertical">
+        <LinearLayout style="@style/SectCard">
 
-            <LinearLayout android:id="@+id/rowA11y" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
-                <TextView style="@style/SettingLabel" android:text="Accessibility" />
-                <TextView android:id="@+id/tvA11y" style="@style/SettingValue" android:text="off" />
+            <LinearLayout android:id="@+id/rowA11y" style="@style/DRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/DLabel" android:text="Accessibility" />
+                <TextView android:id="@+id/tvA11y" style="@style/DValue" android:text="off" />
             </LinearLayout>
 
-            <LinearLayout android:id="@+id/rowNotif" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
-                <TextView style="@style/SettingLabel" android:text="Notifications" />
-                <TextView android:id="@+id/tvNotif" style="@style/SettingValue" android:text="off" />
+            <LinearLayout android:id="@+id/rowNotif" style="@style/DRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/DLabel" android:text="Notifications" />
+                <TextView android:id="@+id/tvNotif" style="@style/DValue" android:text="off" />
             </LinearLayout>
 
-            <LinearLayout android:id="@+id/rowExact" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
-                <TextView style="@style/SettingLabel" android:text="Exact alarms" />
-                <TextView android:id="@+id/tvExact" style="@style/SettingValue" android:text="off" />
+            <LinearLayout android:id="@+id/rowExact" style="@style/DRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/DLabel" android:text="Exact alarms" />
+                <TextView android:id="@+id/tvExact" style="@style/DValue" android:text="off" />
             </LinearLayout>
 
-            <LinearLayout android:id="@+id/rowOverlay" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
-                <TextView style="@style/SettingLabel" android:text="Display over other apps" />
-                <TextView android:id="@+id/tvOverlay" style="@style/SettingValue" android:text="off" />
+            <LinearLayout android:id="@+id/rowOverlay" style="@style/DRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/DLabel" android:text="Display over other apps" />
+                <TextView android:id="@+id/tvOverlay" style="@style/DValue" android:text="off" />
             </LinearLayout>
         </LinearLayout>
 
         <!-- ACCOUNT -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="6dp"
-            android:letterSpacing="0.14"
-            android:text="ACCOUNT"
-            android:textColor="#8B98AB"
-            android:textSize="9sp" />
+        <TextView style="@style/SectHead" android:text="ACCOUNT" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:background="#FFFFFF"
-            android:orientation="vertical">
+        <LinearLayout style="@style/SectCard">
 
-            <LinearLayout style="@style/SettingRow">
-                <TextView style="@style/SettingLabel" android:text="Employee ID" />
-                <TextView android:id="@+id/tvEmpId" style="@style/SettingValue" android:text="not saved" />
+            <LinearLayout style="@style/DRow">
+                <TextView style="@style/DLabel" android:text="Employee ID" />
+                <TextView android:id="@+id/tvEmpId" style="@style/DValue" android:text="not saved" />
             </LinearLayout>
 
-            <LinearLayout android:id="@+id/rowClear" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
-                <TextView style="@style/SettingLabel" android:text="Clear saved details" android:textColor="#B3261E" />
+            <LinearLayout android:id="@+id/rowClear" style="@style/DRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/DLabel" android:text="Clear saved details" android:textColor="#FF9A9A" />
             </LinearLayout>
         </LinearLayout>
 
@@ -221,8 +180,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:gravity="center"
-            android:text="TTBS-HRMS · by Prateek"
-            android:textColor="#A9B4C4"
+            android:text="TTBS-HRMS 3.3 · by Prateek"
+            android:textColor="#3F5673"
             android:textSize="10sp" />
     </LinearLayout>
 </ScrollView>

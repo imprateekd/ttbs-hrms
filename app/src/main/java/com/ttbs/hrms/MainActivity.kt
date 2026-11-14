@@ -25,7 +25,23 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn12).setOnClickListener { setFormat(false) }
         findViewById<Button>(R.id.btn24).setOnClickListener { setFormat(true) }
+        findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<View>(R.id.rowResetBreak).setOnClickListener { confirmResetBreak() }
+
+        // I1: the value itself opens a keypad; the +/- buttons stay for nudges
+        findViewById<TextView>(R.id.tvRepeat).setOnClickListener {
+            askNumber("Nag again", "Minutes between reminders", Cfg.repeat(this), 1, 60, " min") {
+                Cfg.setRepeat(this, it)
+                refresh()
+            }
+        }
+        findViewById<TextView>(R.id.tvBreakLimit).setOnClickListener {
+            askNumber("Break limit", "Minutes of break allowed per day", Cfg.breakLimitMin(this), 5, 240, " min") {
+                Cfg.setBreakLimitMin(this, it)
+                refresh()
+            }
+        }
+        findViewById<TextView>(R.id.tvDeadline).setOnClickListener { askDeadline() }
         findViewById<View>(R.id.rowClear).setOnClickListener { confirmClear() }
 
         findViewById<Button>(R.id.btnDeadlineMinus).setOnClickListener { stepDeadline(-15) }
@@ -94,6 +110,50 @@ class MainActivity : AppCompatActivity() {
             Cfg.username(this).ifBlank { "not saved" }
     }
 
+    /** A keypad, not just steppers - typing 45 is faster than nine taps. */
+    private fun askNumber(
+        title: String,
+        hint: String,
+        current: Int,
+        min: Int,
+        max: Int,
+        unit: String,
+        onSet: (Int) -> Unit
+    ) {
+        val input = android.widget.EditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            setText(current.toString())
+            setSelection(text.length)
+            setHint(hint)
+            setPadding(48, 32, 48, 32)
+        }
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(hint + " (" + min + "-" + max + unit + ")")
+            .setView(input)
+            .setPositiveButton("Set") { _, _ ->
+                val v = input.text.toString().toIntOrNull() ?: current
+                onSet(v.coerceIn(min, max))
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun askDeadline() {
+        val mins = Cfg.deadline(this)
+        val picker = android.app.TimePickerDialog(
+            this,
+            { _, h, m ->
+                Cfg.setDeadline(this, h * 60 + m)
+                if (Cfg.enabled(this)) AlarmScheduler.scheduleAt(this, AlarmScheduler.nextDeadlineMillis(this))
+                refresh()
+            },
+            mins / 60, mins % 60, Cfg.hour24(this)
+        )
+        picker.setTitle("Punch-out deadline")
+        picker.show()
+    }
+
     private fun setFormat(hour24: Boolean) {
         Cfg.setHour24(this, hour24)
         refresh()
@@ -104,9 +164,9 @@ class MainActivity : AppCompatActivity() {
         fun style(id: Int, on: Boolean) {
             val b = findViewById<Button>(id)
             b.backgroundTintList = android.content.res.ColorStateList.valueOf(
-                if (on) 0xFF0F2A55.toInt() else 0xFFEEF2F8.toInt()
+                if (on) 0xFF2F7DFF.toInt() else 0x1FFFFFFF
             )
-            b.setTextColor(if (on) 0xFFFFFFFF.toInt() else 0xFF33445C.toInt())
+            b.setTextColor(if (on) 0xFFFFFFFF.toInt() else 0xFF8FA6C8.toInt())
         }
         style(R.id.btn12, !h24)
         style(R.id.btn24, h24)
