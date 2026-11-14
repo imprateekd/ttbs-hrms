@@ -16,7 +16,8 @@
     <application
         android:allowBackup="false"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher_guard"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="TTBS-HRMS"
         android:supportsRtl="true"
         android:usesCleartextTraffic="false"
