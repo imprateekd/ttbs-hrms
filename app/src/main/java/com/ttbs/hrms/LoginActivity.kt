@@ -15,7 +15,6 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -42,7 +41,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var tvPout: TextView
     private lateinit var tvActive: TextView
     private lateinit var tvBreak: TextView
-    private lateinit var pbBreak: ProgressBar
     private lateinit var btnBreak: Button
     private lateinit var breakFooter: View
     private lateinit var dotActive: View
@@ -79,7 +77,6 @@ class LoginActivity : AppCompatActivity() {
         tvPout = findViewById(R.id.tvPout)
         tvActive = findViewById(R.id.tvActive)
         tvBreak = findViewById(R.id.tvBreak)
-        pbBreak = findViewById(R.id.pbBreak)
         btnBreak = findViewById(R.id.btnBreak)
         breakFooter = findViewById(R.id.breakFooter)
         dotActive = findViewById(R.id.dotActive)
@@ -191,10 +188,11 @@ class LoginActivity : AppCompatActivity() {
         tvBreak.text = Fmt.durationTicking(used) + " / " + limit + "m"
         tvBreak.setTextColor(if (onBreak) 0xFFFFB020.toInt() else 0xFFB9CBEA.toInt())
         lblBreak.setTextColor(if (onBreak) 0xFFFFB020.toInt() else 0xFF7F93B3.toInt())
-        pbBreak.progress = ((used * 100) / (limit * 60L)).coerceIn(0L, 100L).toInt()
 
         // while on a break the whole row reads as active; otherwise it stays quiet
-        breakFooter.setBackgroundColor(if (onBreak) 0x29FFB020 else 0x05FFFFFF)
+        breakFooter.setBackgroundResource(
+            if (onBreak) R.drawable.bg_break_active else R.drawable.bg_break_idle
+        )
         btnBreak.text = if (onBreak) "End break" else "Start break"
         btnBreak.backgroundTintList = android.content.res.ColorStateList.valueOf(
             if (onBreak) 0xFF0F766E.toInt() else 0xFFFFB020.toInt()
