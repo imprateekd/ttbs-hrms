@@ -85,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
         etUser.addTextChangedListener(watcher)
         etPass.addTextChangedListener(watcher)
 
-        if (Cfg.username(this).isNotBlank()) {
+        if (Cfg.autoLogin(this) && Cfg.username(this).isNotBlank()) {
             etUser.setText(Cfg.username(this))
             etPass.setText(Cfg.password(this))
             saveRowShown = true
@@ -205,7 +205,9 @@ class LoginActivity : AppCompatActivity() {
             Cfg.setPunchOut(this, "")
             Toast.makeText(this, "Saved on this phone (encrypted)", Toast.LENGTH_SHORT).show()
         } else {
-            // without saving, the auto sign-in has nothing to type, so it stays off
+            // Unticked: forget everything, so the next launch starts with empty fields.
+            Cfg.setUsername(this, "")
+            Cfg.setPassword(this, "")
             Cfg.setAutoLogin(this, false)
         }
 
