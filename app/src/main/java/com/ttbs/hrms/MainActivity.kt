@@ -26,6 +26,23 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn12).setOnClickListener { setFormat(false) }
         findViewById<Button>(R.id.btn24).setOnClickListener { setFormat(true) }
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
+
+        findViewById<View>(R.id.btnInstagram).setOnClickListener {
+            openLink("https://instagram.com/imprateekd")
+        }
+        // WhatsApp usernames have no public link format I can rely on, so this opens
+        // WhatsApp itself and tells you the handle rather than guessing a chat URL.
+        findViewById<View>(R.id.btnWhatsapp).setOnClickListener {
+            val opened = runCatching {
+                startActivity(
+                    Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone="))
+                )
+            }.isSuccess
+            if (!opened) {
+                runCatching { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.whatsapp"))) }
+            }
+            Toast.makeText(this, "WhatsApp: @imprateekd", Toast.LENGTH_LONG).show()
+        }
         findViewById<View>(R.id.rowResetBreak).setOnClickListener { confirmResetBreak() }
 
         // I1: the value itself opens a keypad; the +/- buttons stay for nudges
@@ -170,6 +187,11 @@ class MainActivity : AppCompatActivity() {
         }
         style(R.id.btn12, !h24)
         style(R.id.btn24, h24)
+    }
+
+    private fun openLink(url: String) {
+        val ok = runCatching { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }.isSuccess
+        if (!ok) Toast.makeText(this, url, Toast.LENGTH_LONG).show()
     }
 
     private fun onOff(v: Boolean) = if (v) "on" else "off"
