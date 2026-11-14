@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Desktop mode (required by this HRMS)"
+            android:text="Desktop mode (leave OFF — it breaks Cloudflare verification)"
             android:textColor="@color/ink" />
 
         <Button

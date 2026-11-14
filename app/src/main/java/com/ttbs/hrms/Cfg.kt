@@ -26,7 +26,7 @@ object Cfg {
         sp(c).edit().putInt("repeat", minutes.coerceIn(1, 180)).apply()
     }
 
-    fun desktop(c: Context): Boolean = sp(c).getBoolean("desktop", true)
+    fun desktop(c: Context): Boolean = sp(c).getBoolean("desktop", false)
     fun setDesktop(c: Context, v: Boolean) { sp(c).edit().putBoolean("desktop", v).apply() }
 
     fun outRegex(c: Context): String = sp(c).getString("outRegex", "") ?: ""

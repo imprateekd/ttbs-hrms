@@ -30,6 +30,10 @@ object WebSetup {
         s.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
         s.builtInZoomControls = true
         s.displayZoomControls = false
+        s.supportMultipleWindows()
+        // Spoofing the UA alone is what makes Cloudflare Turnstile fail: the WebView still
+        // reports Sec-CH-UA-Platform: Android, and that contradiction reads as a bot. So the
+        // spoof is opt-in, and off by default.
         if (desktop) {
             s.userAgentString = DESKTOP_UA
         }
