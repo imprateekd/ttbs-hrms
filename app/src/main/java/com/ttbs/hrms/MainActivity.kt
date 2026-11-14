@@ -158,7 +158,12 @@ class MainActivity : AppCompatActivity() {
         val uri = Uri.parse(Cfg.url(this))
         val opened = runCatching {
             androidx.browser.customtabs.CustomTabsIntent.Builder()
-                .setShowTitle(true)
+                .setShowTitle(false)
+                .setUrlBarHidingEnabled(true)
+                .setToolbarColor(android.graphics.Color.parseColor("#0F2A55"))
+                .setSecondaryToolbarColor(android.graphics.Color.parseColor("#0B5FFF"))
+                .setNavigationBarColor(android.graphics.Color.parseColor("#0F2A55"))
+                .setNavigationBarDividerColor(android.graphics.Color.parseColor("#0B5FFF"))
                 .build()
                 .launchUrl(this, uri)
         }.isSuccess

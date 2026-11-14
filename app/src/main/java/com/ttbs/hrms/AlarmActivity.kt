@@ -78,7 +78,10 @@ class AlarmActivity : AppCompatActivity() {
         val url = Cfg.url(this)
         val opened = runCatching {
             androidx.browser.customtabs.CustomTabsIntent.Builder()
-                .setShowTitle(true)
+                .setShowTitle(false)
+                .setUrlBarHidingEnabled(true)
+                .setToolbarColor(android.graphics.Color.parseColor("#0F2A55"))
+                .setNavigationBarColor(android.graphics.Color.parseColor("#0F2A55"))
                 .build()
                 .launchUrl(this, Uri.parse(url))
         }.isSuccess || runCatching {
