@@ -26,6 +26,10 @@ object Cfg {
         sp(c).edit().putInt("repeat", minutes.coerceIn(1, 180)).apply()
     }
 
+    /** true = open the portal and read the Punch In/Out card; false = ring on time alone. */
+    fun verify(c: Context): Boolean = sp(c).getBoolean("verify", false)
+    fun setVerify(c: Context, v: Boolean) { sp(c).edit().putBoolean("verify", v).apply() }
+
     fun desktop(c: Context): Boolean = sp(c).getBoolean("desktop", false)
     fun setDesktop(c: Context, v: Boolean) { sp(c).edit().putBoolean("desktop", v).apply() }
 

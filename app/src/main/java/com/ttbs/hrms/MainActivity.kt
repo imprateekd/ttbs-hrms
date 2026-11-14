@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var etRepeat: EditText
     private lateinit var etUrl: EditText
     private lateinit var switchDesktop: SwitchCompat
+    private lateinit var switchVerify: SwitchCompat
     private lateinit var switchAutoLogin: SwitchCompat
     private lateinit var etUser: EditText
     private lateinit var etPass: EditText
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         etRepeat = findViewById(R.id.etRepeat)
         etUrl = findViewById(R.id.etUrl)
         switchDesktop = findViewById(R.id.switchDesktop)
+        switchVerify = findViewById(R.id.switchVerify)
         switchAutoLogin = findViewById(R.id.switchAutoLogin)
         etUser = findViewById(R.id.etUser)
         etPass = findViewById(R.id.etPass)
@@ -115,6 +117,7 @@ class MainActivity : AppCompatActivity() {
         etRepeat.setText(Cfg.repeat(this).toString())
         etUrl.setText(Cfg.url(this))
         switchDesktop.isChecked = Cfg.desktop(this)
+        switchVerify.isChecked = Cfg.verify(this)
         switchAutoLogin.isChecked = Cfg.autoLogin(this)
         etUser.setText(Cfg.username(this))
         etPass.setText(Cfg.password(this))
@@ -128,6 +131,7 @@ class MainActivity : AppCompatActivity() {
         Cfg.setRepeat(this, etRepeat.text.toString().toIntOrNull() ?: 2)
         Cfg.setUrl(this, etUrl.text.toString())
         Cfg.setDesktop(this, switchDesktop.isChecked)
+        Cfg.setVerify(this, switchVerify.isChecked)
         Cfg.setAutoLogin(this, switchAutoLogin.isChecked)
         Cfg.setUsername(this, etUser.text.toString())
         if (etPass.text.toString() != Cfg.password(this)) Cfg.setPassword(this, etPass.text.toString())

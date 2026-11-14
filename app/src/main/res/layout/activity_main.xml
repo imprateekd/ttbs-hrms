@@ -76,6 +76,14 @@
             android:text="Desktop mode (leave OFF — it breaks Cloudflare verification)"
             android:textColor="@color/ink" />
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchVerify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Verify on the portal automatically (needs a login that works in the app)"
+            android:textColor="@color/ink" />
+
         <Button
             android:id="@+id/btnOpenDashboard"
             android:layout_width="match_parent"

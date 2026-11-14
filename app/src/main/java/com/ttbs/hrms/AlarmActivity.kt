@@ -5,11 +5,13 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 /** Loud, full-screen "you forgot to punch out" screen. */
@@ -28,12 +30,19 @@ class AlarmActivity : AppCompatActivity() {
         }
 
         val unknown = intent.getBooleanExtra("unknown", false)
+        val unverified = intent.getBooleanExtra("unverified", false)
         val reason = intent.getStringExtra("reason") ?: ""
         val punchIn = intent.getStringExtra("pin")
 
-        findViewById<TextView>(R.id.tvTitle).text =
-            if (unknown) "Couldn't confirm your punch-out" else "You haven't punched out yet"
+        findViewById<TextView>(R.id.tvTitle).text = when {
+            unverified -> "Time to punch out"
+            unknown -> "Couldn't confirm your punch-out"
+            else -> "You haven't punched out yet"
+        }
         findViewById<TextView>(R.id.tvDetail).text = when {
+            unverified ->
+                "It's " + Cfg.deadlineLabel(this) + ". If you haven't punched out yet, open the " +
+                    "dashboard below — Chrome still has your login."
             unknown -> "$reason. Please open the dashboard and check."
             !punchIn.isNullOrBlank() ->
                 "Punch In: " + punchIn + "   •   Punch Out: 00:00:00\n" +
@@ -41,10 +50,14 @@ class AlarmActivity : AppCompatActivity() {
             else -> "It's past " + Cfg.deadlineLabel(this) + " and your attendance still shows you as punched in."
         }
 
+        // If the alarm is ignored or swiped away, it rings again on the repeat interval.
+        AlarmScheduler.scheduleRepeat(this)
+
         startRinging()
 
         findViewById<Button>(R.id.btnOpen).setOnClickListener {
-            startActivity(Intent(this, BrowserActivity::class.java))
+            openDashboardInChrome()
+            AlarmScheduler.scheduleAt(this, AlarmScheduler.nextDeadlineMillis(this))
             stopRinging()
             finish()
         }
@@ -57,6 +70,18 @@ class AlarmActivity : AppCompatActivity() {
             AlarmScheduler.scheduleAt(this, AlarmScheduler.nextDeadlineMillis(this))
             stopRinging()
             finish()
+        }
+    }
+
+    /** Hands off to Chrome, where the portal session already exists — no login, no captcha. */
+    private fun openDashboardInChrome() {
+        val url = Cfg.url(this)
+        val view = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val chrome = Intent(view).setPackage("com.android.chrome")
+        val opened = runCatching { startActivity(chrome) }.isSuccess ||
+            runCatching { startActivity(view) }.isSuccess
+        if (!opened) {
+            Toast.makeText(this, "No browser found - open the dashboard by hand.", Toast.LENGTH_LONG).show()
         }
     }
 
