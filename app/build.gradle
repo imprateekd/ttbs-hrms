@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace 'com.ttbs.hrms'
-    compileSdk 34
+    compileSdk 37
 
     defaultConfig {
         applicationId "com.ttbs.hrms"
