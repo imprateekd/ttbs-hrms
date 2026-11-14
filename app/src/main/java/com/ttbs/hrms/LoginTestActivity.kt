@@ -107,6 +107,8 @@ class LoginTestActivity : AppCompatActivity() {
                     hops++
                 }
 
+                say("   content-type: ${resp.header("Content-Type")}")
+                say("   page length: ${body.length}")
                 val form = parseForm(body)
                 say("")
                 say("2. form found: ${form.action ?: "(none)"}  method=${form.method}")
@@ -140,11 +142,18 @@ class LoginTestActivity : AppCompatActivity() {
                     Request.Builder().url(postUrl).post(fb)
                         .header("User-Agent", ua)
                         .header("Referer", url)
-                        .header("Content-Type", "application/x-www-form-urlencoded")
+                        .header("Accept", "application/json, text/javascript, */*; q=0.01")
+                        .header("X-Requested-With", "XMLHttpRequest")
+                        .header("Origin", "https://technotask.net")
                         .build()
                 ).execute()
                 say("   ${pr.code} ${pr.message}")
+                say("   content-type: ${pr.header("Content-Type")}")
+                pr.headers.forEach { (k, v) ->
+                    if (k.equals("Set-Cookie", true) || k.equals("Location", true)) say("   $k: $v")
+                }
                 var pbody = pr.body?.string() ?: ""
+                say("   body (${pbody.length} bytes): " + pbody.take(600).replace("\n", " "))
                 var phops = 0
                 while (pr.isRedirect && phops < 6) {
                     val loc = pr.header("Location") ?: break
@@ -154,6 +163,7 @@ class LoginTestActivity : AppCompatActivity() {
                     pr = client.newCall(Request.Builder().url(next).header("User-Agent", ua).build()).execute()
                     say("   ${pr.code} ${pr.message}")
                     pbody = pr.body?.string() ?: ""
+                    say("   body (${pbody.length} bytes): " + pbody.take(600).replace("\n", " "))
                     phops++
                 }
 
@@ -169,6 +179,8 @@ class LoginTestActivity : AppCompatActivity() {
                         say("RESULT: SUCCESS - the portal accepted a native login. A fully native app is possible.")
                     Regex("type=[\"']password[\"']").containsMatchIn(pbody) ->
                         say("RESULT: REJECTED - still on the login page. The server enforces the captcha, so native login is not possible.")
+                    pbody.length < 400 && (pbody.contains("status", true) || pbody.contains("message", true) || pbody.contains("error", true)) ->
+                        say("RESULT: SERVER SAID NO - the short body above is the server's answer, likely a JSON error. Send me this log.")
                     else ->
                         say("RESULT: UNCLEAR - logged something, but not a dashboard. Copy this log and send it.")
                 }
