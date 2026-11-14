@@ -44,6 +44,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var tvBreak: TextView
     private lateinit var pbBreak: ProgressBar
     private lateinit var btnBreak: Button
+    private lateinit var breakFooter: View
 
     private val handler = Handler(Looper.getMainLooper())
     private var saveRowShown = false
@@ -75,6 +76,7 @@ class LoginActivity : AppCompatActivity() {
         tvBreak = findViewById(R.id.tvBreak)
         pbBreak = findViewById(R.id.pbBreak)
         btnBreak = findViewById(R.id.btnBreak)
+        breakFooter = findViewById(R.id.breakFooter)
 
         btnBreak.setOnClickListener { toggleBreak() }
         findViewById<ImageView>(R.id.btnSettings).setOnClickListener {
@@ -154,6 +156,8 @@ class LoginActivity : AppCompatActivity() {
         tvBreak.text = Day.hms(used) + " / " + limit + "m"
         tvBreak.setTextColor(if (onBreak) 0xFFFFB020.toInt() else 0xFFB9CBEA.toInt())
         pbBreak.progress = ((used * 100) / (limit * 60L)).coerceIn(0L, 100L).toInt()
+        // the footer goes amber while a break is running, so the state is visible at a glance
+        breakFooter.setBackgroundColor(if (onBreak) 0x1FFFB020 else 0x05FFFFFF)
         btnBreak.text = if (onBreak) "End" else "Start"
         btnBreak.backgroundTintList = android.content.res.ColorStateList.valueOf(
             if (onBreak) 0xFF0F766E.toInt() else 0xFFFFB020.toInt()
