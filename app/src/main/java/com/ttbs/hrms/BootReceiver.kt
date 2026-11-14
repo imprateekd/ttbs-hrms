@@ -6,8 +6,12 @@ import android.content.Intent
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (!Cfg.enabled(context)) return
         Notify.ensure(context)
-        AlarmScheduler.scheduleAt(context, AlarmScheduler.nextDeadlineMillis(context))
+        // the day still has to roll over even if reminders are switched off
+        Cfg.ensureToday(context)
+        AlarmScheduler.scheduleMidnight(context)
+        if (Cfg.enabled(context)) {
+            AlarmScheduler.scheduleAt(context, AlarmScheduler.nextDeadlineMillis(context))
+        }
     }
 }

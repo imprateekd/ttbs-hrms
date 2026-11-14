@@ -54,6 +54,7 @@ class PortalReaderService : AccessibilityService() {
         val pout = timeAfter(text, Regex("Punch\\s*Out\\b", RegexOption.IGNORE_CASE), null)
         if (pin == null && pout == null) return
 
+        Cfg.ensureToday(this)
         if (pin != null) Cfg.setPunchIn(this, pin)
         if (pout != null) Cfg.setPunchOut(this, pout)
         Cfg.setPunchDay(this, SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))

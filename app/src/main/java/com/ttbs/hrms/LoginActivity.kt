@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.ProgressBar
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -31,6 +32,20 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var saveRow: View
     private lateinit var cbSave: CheckBox
     private lateinit var tvSig: TextView
+    private lateinit var strip: View
+    private lateinit var tvPin: TextView
+    private lateinit var tvPout: TextView
+    private lateinit var tvActive: TextView
+    private lateinit var tvBreak: TextView
+    private lateinit var pbBreak: ProgressBar
+    private lateinit var btnBreak: Button
+    private val ticker = Handler(Looper.getMainLooper())
+    private val tick = object : Runnable {
+        override fun run() {
+            refreshStrip()
+            ticker.postDelayed(this, 1000)
+        }
+    }
     private lateinit var sigRule: View
 
     private val handler = Handler(Looper.getMainLooper())
@@ -47,6 +62,14 @@ class LoginActivity : AppCompatActivity() {
         saveRow = findViewById(R.id.saveRow)
         cbSave = findViewById(R.id.cbSave)
         tvSig = findViewById(R.id.tvSig)
+        strip = findViewById(R.id.strip)
+        tvPin = findViewById(R.id.tvPin)
+        tvPout = findViewById(R.id.tvPout)
+        tvActive = findViewById(R.id.tvActive)
+        tvBreak = findViewById(R.id.tvBreak)
+        pbBreak = findViewById(R.id.pbBreak)
+        btnBreak = findViewById(R.id.btnBreak)
+        btnBreak.setOnClickListener { toggleBreak() }
         sigRule = findViewById(R.id.sigRule)
 
         val watcher = object : TextWatcher {
@@ -79,11 +102,56 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        Cfg.ensureToday(this)
+        AlarmScheduler.scheduleMidnight(this)
+        refreshStrip()
+        ticker.removeCallbacks(tick)
+        ticker.post(tick)
         // came back from the accessibility settings: carry on with the sign-in
         if (awaitingPermission && ReaderHelp.enabled(this)) {
             awaitingPermission = false
             proceed()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        ticker.removeCallbacks(tick)
+    }
+
+    /** Three segments above, the break line beneath - all derived, nothing accumulated. */
+    private fun refreshStrip() {
+        val pin = Cfg.punchIn(this)
+        val pout = Cfg.punchOut(this)
+        val hasTimes = pin.isNotBlank()
+        strip.visibility = if (hasTimes) View.VISIBLE else View.GONE
+
+        tvPin.text = if (hasTimes) pin else "--:--:--"
+        tvPout.text = if (pout.isNotBlank()) pout else "--:--:--"
+        tvActive.text = if (hasTimes) Day.hms(Day.activeSecs(this)) else "--:--:--"
+
+        val onBreak = Day.isOnBreak(this)
+        val limit = Cfg.breakLimitMin(this)
+        val used = Day.breakTodaySecs(this)
+        tvBreak.text = Day.hms(used) + " / " + limit + "m"
+        tvBreak.setTextColor(if (onBreak) 0xFFFFB020.toInt() else 0xFFB9CBEA.toInt())
+        pbBreak.progress = ((used * 100) / (limit * 60L)).coerceIn(0L, 100L).toInt()
+        btnBreak.text = if (onBreak) "End" else "Start"
+        btnBreak.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            if (onBreak) 0xFF0F766E.toInt() else 0xFFFFB020.toInt()
+        )
+        btnBreak.setTextColor(if (onBreak) 0xFFFFFFFF.toInt() else 0xFF3A2600.toInt())
+    }
+
+    private fun toggleBreak() {
+        if (Day.isOnBreak(this)) {
+            Day.endBreak(this)
+            AlarmScheduler.cancelBreak(this)
+        } else {
+            Day.startBreak(this)
+            AlarmScheduler.scheduleBreak(this)
+        }
+        refreshStrip()
     }
 
     /** The save option appears the first time the user types anything. */

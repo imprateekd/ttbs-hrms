@@ -7,6 +7,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.widget.Button
@@ -29,17 +30,20 @@ class AlarmActivity : AppCompatActivity() {
             setTurnScreenOn(true)
         }
 
+        val isBreak = intent.getBooleanExtra("break", false)
         val unknown = intent.getBooleanExtra("unknown", false)
         val unverified = intent.getBooleanExtra("unverified", false)
         val reason = intent.getStringExtra("reason") ?: ""
         val punchIn = intent.getStringExtra("pin")
 
         findViewById<TextView>(R.id.tvTitle).text = when {
+            isBreak -> "Break is over"
             unverified -> "Time to punch out"
             unknown -> "Couldn't confirm your punch-out"
             else -> "You haven't punched out yet"
         }
         findViewById<TextView>(R.id.tvDetail).text = when {
+            isBreak -> "You have used your " + Cfg.breakLimitMin(this) + " minutes of break today. End the break to start Active Hours again."
             unverified ->
                 "It's " + Cfg.deadlineLabel(this) + ". If you haven't punched out yet, open the " +
                     "dashboard below — Chrome still has your login."
@@ -62,14 +66,31 @@ class AlarmActivity : AppCompatActivity() {
             finish()
         }
         findViewById<Button>(R.id.btnSnooze).setOnClickListener {
-            AlarmScheduler.scheduleRepeat(this)
+            if (isBreak) {
+                // break alarms repeat every couple of minutes until the break is ended
+                AlarmScheduler.scheduleAt(this, System.currentTimeMillis() + 2 * 60_000L)
+            } else {
+                AlarmScheduler.scheduleRepeat(this)
+            }
             stopRinging()
             finish()
         }
+
         findViewById<Button>(R.id.btnStop).setOnClickListener {
-            AlarmScheduler.scheduleAt(this, AlarmScheduler.nextDeadlineMillis(this))
+            if (isBreak) {
+                Day.endBreak(this)
+                AlarmScheduler.cancelBreak(this)
+            } else {
+                AlarmScheduler.scheduleAt(this, AlarmScheduler.nextDeadlineMillis(this))
+            }
             stopRinging()
             finish()
+        }
+
+        if (isBreak) {
+            findViewById<Button>(R.id.btnStop).text = "End break and resume"
+            findViewById<Button>(R.id.btnSnooze).text = "Remind me in 2 minutes"
+            findViewById<Button>(R.id.btnOpen).visibility = View.GONE
         }
     }
 

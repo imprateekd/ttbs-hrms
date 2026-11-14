@@ -87,6 +87,37 @@ object Cfg {
         sp(c).edit().putString("lastResult", "$stamp — $v").apply()
     }
 
+    fun breakTotalSec(c: Context): Long = sp(c).getLong("breakTotal", 0L)
+    fun setBreakTotalSec(c: Context, v: Long) { sp(c).edit().putLong("breakTotal", v).apply() }
+
+    /** 0 means "not on a break". Stored as a wall-clock timestamp so it survives the app closing. */
+    fun breakStartMs(c: Context): Long = sp(c).getLong("breakStart", 0L)
+    fun setBreakStartMs(c: Context, v: Long) { sp(c).edit().putLong("breakStart", v).apply() }
+
+    fun breakLimitMin(c: Context): Int = sp(c).getInt("breakLimit", 45)
+    fun setBreakLimitMin(c: Context, v: Int) { sp(c).edit().putInt("breakLimit", v.coerceIn(5, 240)).apply() }
+
+    fun dayKey(c: Context): String = sp(c).getString("dayKey", "") ?: ""
+    fun setDayKey(c: Context, v: String) { sp(c).edit().putString("dayKey", v).apply() }
+
+    /** Wipes every counter for the day. Called at midnight and on the first open of a new date. */
+    fun resetDay(c: Context) {
+        sp(c).edit()
+            .putString("punchIn", "")
+            .putString("punchOut", "")
+            .putLong("breakTotal", 0L)
+            .putLong("breakStart", 0L)
+            .putString("dayKey", Day.todayKey())
+            .apply()
+    }
+
+    /** Returns true when the stored day was stale and has just been cleared. */
+    fun ensureToday(c: Context): Boolean {
+        if (dayKey(c) == Day.todayKey()) return false
+        resetDay(c)
+        return true
+    }
+
     fun deadlineLabel(c: Context): String {
         val m = deadline(c)
         val h = m / 60
