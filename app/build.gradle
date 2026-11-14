@@ -15,6 +15,8 @@ android {
 
     buildTypes {
         release {
+            // signed with the debug key so it installs directly; release strips native symbols
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

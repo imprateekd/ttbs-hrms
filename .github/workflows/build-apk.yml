@@ -31,13 +31,13 @@ jobs:
           yes | sdkmanager --channel=3 "platforms;android-37" 2>&1 | tail -5 || true
 
       - name: Build the debug APK
-        run: gradle :app:assembleDebug --no-daemon --stacktrace
+        run: gradle :app:assembleRelease --no-daemon --stacktrace
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4
         with:
-          name: TTBS-HRMS-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: TTBS-HRMS-release-apk
+          path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
       - name: Inspect GeckoView permission API
