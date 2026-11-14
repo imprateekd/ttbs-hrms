@@ -10,48 +10,150 @@
         android:layout_width="34dp"
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="14dp"
         android:background="#2A3F60" />
 
     <TextView
+        android:id="@+id/tvPermTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="One more step"
+        android:text="A few permissions first"
         android:textColor="#FFFFFF"
-        android:textSize="17sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tvPermCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="TTBS-HRMS needs accessibility to sign you in and read your punch times."
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="10dp"
+        android:text="0 of 4 enabled"
         android:textColor="#9FB6D8"
-        android:textSize="12sp" />
+        android:textSize="11sp" />
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/rowA11y"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp">
+
+        <TextView
+            android:id="@+id/tickA11y"
+            android:layout_width="22dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#35D07F"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Accessibility — signs you in through Chrome and reads your punch times"
+            android:textColor="#DBE8FF"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rowNotif"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp">
+
+        <TextView
+            android:id="@+id/tickNotif"
+            android:layout_width="22dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#35D07F"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Notifications — so the reminder can reach you"
+            android:textColor="#DBE8FF"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rowExact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp">
+
+        <TextView
+            android:id="@+id/tickExact"
+            android:layout_width="22dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#35D07F"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Exact alarms — so 6:00 PM means 6:00 PM"
+            android:textColor="#DBE8FF"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rowOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp">
+
+        <TextView
+            android:id="@+id/tickOverlay"
+            android:layout_width="22dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#35D07F"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Display over other apps — so the reminder can appear over Chrome"
+            android:textColor="#DBE8FF"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnPermContinue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:lineSpacingExtra="4dp"
-        android:text="1.  Open Settings → Accessibility\n2.  Installed apps → TTBS-HRMS\n3.  Turn it on and allow"
-        android:textColor="#B9CBEA"
-        android:textSize="12sp" />
-
-    <Button
-        android:id="@+id/btnOpenSettings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:backgroundTint="#2F7DFF"
-        android:text="Open accessibility settings"
+        android:text="Continue"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textSize="13sp"
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/btnNotNow"
+        android:id="@+id/btnPermLater"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
@@ -59,5 +161,5 @@
         android:text="Not now"
         android:textAllCaps="false"
         android:textColor="#CFE0FF"
-        android:textSize="13sp" />
+        android:textSize="12sp" />
 </LinearLayout>

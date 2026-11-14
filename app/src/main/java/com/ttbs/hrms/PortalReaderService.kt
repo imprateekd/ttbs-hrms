@@ -60,6 +60,26 @@ class PortalReaderService : AccessibilityService() {
         Cfg.setPunchDay(this, SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
         Cfg.setLastRead(this, SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()))
 
+        // Check Login Time / Sign In asked to be brought back once the card has been read
+        if (Cfg.pendingReturn(this)) {
+            Cfg.setPendingReturn(this, false)
+            bringAppForward()
+        }
+
+    }
+
+    /** Only possible with "display over other apps", which the app already asks for. */
+    private fun bringAppForward() {
+        if (!android.provider.Settings.canDrawOverlays(this)) return
+        runCatching {
+            startActivity(
+                Intent(this, LoginActivity::class.java).addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+                )
+            )
+        }
     }
 
     private fun maybeAutoLogin(root: AccessibilityNodeInfo, pageText: String) {

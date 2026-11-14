@@ -10,13 +10,29 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="22dp">
+        android:padding="18dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btnSettings"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_strip"
+                android:contentDescription="Settings"
+                android:padding="8dp"
+                android:src="@drawable/ic_settings_cog" />
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/imgLogo"
-            android:layout_width="170dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
             android:adjustViewBounds="true"
             android:contentDescription="Technotask"
             android:src="@drawable/logo_technotask" />
@@ -24,9 +40,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="22dp"
+            android:layout_marginBottom="14dp"
             android:gravity="center"
             android:letterSpacing="0.22"
             android:text="EMPLOYEE PORTAL"
@@ -40,19 +54,20 @@
             android:layout_marginBottom="7dp"
             android:background="@drawable/bg_strip"
             android:orientation="horizontal"
-            android:padding="9dp"
+            android:padding="11dp"
             android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:letterSpacing="0.12"
+                    android:letterSpacing="0.1"
                     android:text="PUNCH IN"
                     android:textColor="#7F93B3"
                     android:textSize="6sp" />
@@ -63,20 +78,26 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
                     android:text="--:--:--"
-                    android:textColor="#E8EEFA"
-                    android:textSize="10sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="17sp" />
             </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#1FFFFFFF" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:letterSpacing="0.12"
+                    android:letterSpacing="0.1"
                     android:text="PUNCH OUT"
                     android:textColor="#7F93B3"
                     android:textSize="6sp" />
@@ -87,22 +108,27 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
                     android:text="--:--:--"
-                    android:textColor="#E8EEFA"
-                    android:textSize="10sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="17sp" />
             </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#1FFFFFFF" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:letterSpacing="0.12"
-                    android:text="ACTIVE HOURS"
+                    android:letterSpacing="0.1"
+                    android:text="ACTIVE"
                     android:textColor="#7F93B3"
                     android:textSize="6sp" />
 
@@ -113,7 +139,7 @@
                     android:fontFamily="monospace"
                     android:text="--:--:--"
                     android:textColor="#FFD66E"
-                    android:textSize="11sp" />
+                    android:textSize="17sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -121,7 +147,7 @@
             android:id="@+id/breakRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="9dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/bg_breakrow"
             android:orientation="vertical"
             android:padding="8dp">
@@ -154,7 +180,7 @@
                 <Button
                     android:id="@+id/btnBreak"
                     android:layout_width="wrap_content"
-                    android:layout_height="34dp"
+                    android:layout_height="32dp"
                     android:backgroundTint="#FFB020"
                     android:minWidth="0dp"
                     android:paddingStart="12dp"
@@ -183,48 +209,48 @@
             android:letterSpacing="0.14"
             android:text="EMPLOYEE ID / USERNAME"
             android:textColor="#93B0DA"
-            android:textSize="8sp" />
+            android:textSize="7sp" />
 
         <EditText
             android:id="@+id/etUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="3dp"
             android:background="#14FFFFFF"
             android:hint="TTBS206217"
             android:inputType="text"
-            android:padding="12dp"
+            android:padding="11dp"
             android:textColor="#FFFFFF"
             android:textColorHint="#7F93B3"
-            android:textSize="13sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:letterSpacing="0.14"
             android:text="PASSWORD"
             android:textColor="#93B0DA"
-            android:textSize="8sp" />
+            android:textSize="7sp" />
 
         <EditText
             android:id="@+id/etPass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="3dp"
             android:background="#14FFFFFF"
             android:hint="••••••••"
             android:inputType="textPassword"
-            android:padding="12dp"
+            android:padding="11dp"
             android:textColor="#FFFFFF"
             android:textColorHint="#7F93B3"
-            android:textSize="13sp" />
+            android:textSize="12sp" />
 
         <LinearLayout
             android:id="@+id/saveRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:visibility="gone">
@@ -242,21 +268,33 @@
                 android:layout_weight="1"
                 android:text="Save these details on this phone (encrypted) so the app can fill your login"
                 android:textColor="#9FB6D8"
-                android:textSize="11sp" />
+                android:textSize="10sp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btnCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_check_outline"
+            android:text="Check Login Time"
+            android:textAllCaps="false"
+            android:textColor="#9FC4FF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="7dp"
             android:backgroundTint="#2F7DFF"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
+            android:paddingTop="13dp"
+            android:paddingBottom="13dp"
             android:text="Sign In to Account"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textStyle="bold" />
 
         <TextView
@@ -264,30 +302,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="16dp"
             android:letterSpacing="0.24"
             android:text=""
             android:textColor="#9FB6D8"
-            android:textSize="10sp" />
+            android:textSize="9sp" />
 
         <View
             android:id="@+id/sigRule"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="5dp"
             android:background="#4C8DFF" />
-
-        <TextView
-            android:id="@+id/tvSettingsLink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="Settings"
-            android:textColor="#6E86A8"
-            android:textSize="11sp" />
     </LinearLayout>
 </ScrollView>

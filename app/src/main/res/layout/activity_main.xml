@@ -2,229 +2,213 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/paper"
+    android:background="#F4F6FB"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingBottom="20dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="14dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Settings"
+                android:textColor="#12233B"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- TODAY -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TTBS-HRMS"
-            android:textColor="@color/ink"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="6dp"
+            android:letterSpacing="0.14"
+            android:text="TODAY"
+            android:textColor="#8B98AB"
+            android:textSize="9sp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="#FFFFFF"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Punch in" />
+                <TextView android:id="@+id/tvSetPin" style="@style/SettingValue" android:text="--:--:--" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Punch out" />
+                <TextView android:id="@+id/tvSetPout" style="@style/SettingValue" android:text="--:--:--" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Active Hours" />
+                <TextView android:id="@+id/tvSetActive" style="@style/SettingValue" android:text="--:--:--" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Break used" />
+                <TextView android:id="@+id/tvSetBreak" style="@style/SettingValue" android:text="00:00:00" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rowResetBreak"
+                style="@style/SettingRow"
+                android:background="?android:attr/selectableItemBackground">
+
+                <TextView
+                    style="@style/SettingLabel"
+                    android:text="Reset break counter"
+                    android:textColor="#B3261E" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- REMINDERS -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="Watches your TTBS HRMS punch-out and shouts if you forget."
-            android:textColor="@color/muted"
-            android:textSize="13sp" />
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="6dp"
+            android:letterSpacing="0.14"
+            android:text="REMINDERS"
+            android:textColor="#8B98AB"
+            android:textSize="9sp" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchEnabled"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="#FFFFFF"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Reminder" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchEnabled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Punch-out deadline" />
+                <Button android:id="@+id/btnDeadlineMinus" style="@style/StepBtn" android:text="−" />
+                <TextView android:id="@+id/tvDeadline" style="@style/SettingValue" android:text="18:00" />
+                <Button android:id="@+id/btnDeadlinePlus" style="@style/StepBtn" android:text="+" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Nag again" />
+                <Button android:id="@+id/btnRepeatMinus" style="@style/StepBtn" android:text="−" />
+                <TextView android:id="@+id/tvRepeat" style="@style/SettingValue" android:text="2m" />
+                <Button android:id="@+id/btnRepeatPlus" style="@style/StepBtn" android:text="+" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Break limit (per day)" />
+                <Button android:id="@+id/btnBreakMinus" style="@style/StepBtn" android:text="−" />
+                <TextView android:id="@+id/tvBreakLimit" style="@style/SettingValue" android:text="45m" />
+                <Button android:id="@+id/btnBreakPlus" style="@style/StepBtn" android:text="+" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ACCESS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="6dp"
+            android:letterSpacing="0.14"
+            android:text="ACCESS"
+            android:textColor="#8B98AB"
+            android:textSize="9sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="#FFFFFF"
+            android:orientation="vertical">
+
+            <LinearLayout android:id="@+id/rowA11y" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/SettingLabel" android:text="Accessibility" />
+                <TextView android:id="@+id/tvA11y" style="@style/SettingValue" android:text="off" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/rowNotif" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/SettingLabel" android:text="Notifications" />
+                <TextView android:id="@+id/tvNotif" style="@style/SettingValue" android:text="off" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/rowExact" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/SettingLabel" android:text="Exact alarms" />
+                <TextView android:id="@+id/tvExact" style="@style/SettingValue" android:text="off" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/rowOverlay" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/SettingLabel" android:text="Display over other apps" />
+                <TextView android:id="@+id/tvOverlay" style="@style/SettingValue" android:text="off" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ACCOUNT -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="6dp"
+            android:letterSpacing="0.14"
+            android:text="ACCOUNT"
+            android:textColor="#8B98AB"
+            android:textSize="9sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="#FFFFFF"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Employee ID" />
+                <TextView android:id="@+id/tvEmpId" style="@style/SettingValue" android:text="not saved" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/rowClear" style="@style/SettingRow" android:background="?android:attr/selectableItemBackground">
+                <TextView style="@style/SettingLabel" android:text="Clear saved details" android:textColor="#B3261E" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:text="Reminder is ON"
-            android:textColor="@color/ink"
-            android:textSize="16sp" />
-
-        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Schedule" />
-
-        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Punch-out deadline" />
-
-        <Button
-            android:id="@+id/btnTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="6:00 PM" />
-
-        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nag again every (minutes)" />
-
-        <EditText
-            android:id="@+id/etRepeat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="3"
-            android:text="2" />
-
-        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dashboard" />
-
-        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="HRMS URL" />
-
-        <EditText
-            android:id="@+id/etUrl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textUri"
-            android:text="https://technotask.net/ttbs_hrms/index.php/EMPLOYEE/Dashboard/" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchDesktop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Desktop mode (leave OFF — it breaks Cloudflare verification)"
-            android:textColor="@color/ink" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchVerify"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Verify on the portal automatically (needs a login that works in the app)"
-            android:textColor="@color/ink" />
-
-        <Button
-            android:id="@+id/btnOpenDashboard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Open dashboard in Chrome (log in once)" />
-
-        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="How should it know you punched out?" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TTBS-HRMS reads the WORK TIME card on your dashboard: a real Punch Out time means you are done, Punch Out 00:00:00 with a Punch In time means it should ring. The rules below are optional overrides, only needed if the dashboard layout changes."
-            android:textColor="@color/muted"
-            android:textSize="12sp" />
-
-        <Button
-            android:id="@+id/btnSaveInSample"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Save current page as: STILL PUNCHED IN" />
-
-        <Button
-            android:id="@+id/btnSaveOutSample"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Save current page as: PUNCHED OUT" />
-
-        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Optional: text that means PUNCHED OUT (regex)" />
-
-        <EditText
-            android:id="@+id/etOutRegex"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="e.g. Punch Out Time:"
-            android:inputType="text" />
-
-        <TextView style="@style/Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Optional: text that means STILL PUNCHED IN (regex)" />
-
-        <EditText
-            android:id="@+id/etInRegex"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="e.g. Punch Out"
-            android:inputType="text" />
-
-        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Auto sign-in (optional)" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchAutoLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fill my username and password automatically"
-            android:textColor="@color/ink" />
-
-        <EditText
-            android:id="@+id/etUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:hint="Username / employee ID"
-            android:inputType="text" />
-
-        <EditText
-            android:id="@+id/etPass"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password (stored encrypted on this phone)"
-            android:inputType="textPassword" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Only works if your portal has no OTP/captcha on every login. If it does, leave this off — the app will tell you when the session expires."
-            android:textColor="@color/muted"
-            android:textSize="12sp" />
-
-        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Permissions" />
-
-        <Button
-            android:id="@+id/btnNotif"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Allow notifications" />
-
-        <Button
-            android:id="@+id/btnExact"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Allow exact alarms" />
-
-        <Button
-            android:id="@+id/btnOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Allow display over other apps (needed to pop the alarm)" />
-
-        <Button
-            android:id="@+id/btnBattery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Ignore battery optimisation" />
-
-        <TextView style="@style/Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Test" />
-
-        <Button
-            android:id="@+id/btnCheckNow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Check my punch-out status right now" />
-
-        <Button
-            android:id="@+id/btnSchedule"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Arm the alarm for the next deadline" />
-
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Stop / disarm" />
-
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp"
-            android:background="#FFFFFF"
-            android:padding="12dp"
-            android:textColor="@color/ink"
-            android:textIsSelectable="true"
-            android:textSize="13sp" />
-
+            android:gravity="center"
+            android:text="TTBS-HRMS · by Prateek"
+            android:textColor="#A9B4C4"
+            android:textSize="10sp" />
     </LinearLayout>
 </ScrollView>

@@ -1,29 +1,33 @@
 package com.ttbs.hrms
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
-import android.widget.ProgressBar
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 /**
- * First screen: the portal's own look — logo, employee ID, password — and the signature
- * "by Prateek" typing itself out underneath, then underlined.
+ * The only screen. Three big timers, a break line beneath them, the login form, and two actions:
+ * Check Login Time (read the portal and come straight back) and Sign In (open the portal).
  *
- * The app cannot authenticate on its own (the server enforces Cloudflare's token), so Sign In
- * saves the details locally and hands off to Chrome, where the accessibility service fills the
- * form and presses the button while Chrome passes the captcha by itself.
+ * The app never authenticates by itself — the server enforces Cloudflare's token — so both actions
+ * hand off to Chrome, where the accessibility service fills the form and presses the button.
  */
 class LoginActivity : AppCompatActivity() {
 
@@ -32,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var saveRow: View
     private lateinit var cbSave: CheckBox
     private lateinit var tvSig: TextView
+    private lateinit var sigRule: View
     private lateinit var strip: View
     private lateinit var tvPin: TextView
     private lateinit var tvPout: TextView
@@ -39,29 +44,30 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var tvBreak: TextView
     private lateinit var pbBreak: ProgressBar
     private lateinit var btnBreak: Button
-    private val ticker = Handler(Looper.getMainLooper())
-    private val tick = object : Runnable {
-        override fun run() {
-            refreshStrip()
-            ticker.postDelayed(this, 1000)
-        }
-    }
-    private lateinit var sigRule: View
 
     private val handler = Handler(Looper.getMainLooper())
     private var saveRowShown = false
-    private var awaitingPermission = false
+    private var pendingAction: (() -> Unit)? = null
+    private var sheet: BottomSheetDialog? = null
     private val signature = "by Prateek"
+
+    private val tick = object : Runnable {
+        override fun run() {
+            refreshStrip()
+            handler.postDelayed(this, 1000)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_login)
+
         etUser = findViewById(R.id.etUser)
         etPass = findViewById(R.id.etPass)
         saveRow = findViewById(R.id.saveRow)
         cbSave = findViewById(R.id.cbSave)
         tvSig = findViewById(R.id.tvSig)
+        sigRule = findViewById(R.id.sigRule)
         strip = findViewById(R.id.strip)
         tvPin = findViewById(R.id.tvPin)
         tvPout = findViewById(R.id.tvPout)
@@ -69,21 +75,13 @@ class LoginActivity : AppCompatActivity() {
         tvBreak = findViewById(R.id.tvBreak)
         pbBreak = findViewById(R.id.pbBreak)
         btnBreak = findViewById(R.id.btnBreak)
-        btnBreak.setOnClickListener { toggleBreak() }
-        sigRule = findViewById(R.id.sigRule)
 
-        val watcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
-            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                if (!saveRowShown && !s.isNullOrEmpty()) {
-                    saveRowShown = true
-                    showSaveOption()
-                }
-            }
+        btnBreak.setOnClickListener { toggleBreak() }
+        findViewById<ImageView>(R.id.btnSettings).setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
         }
-        etUser.addTextChangedListener(watcher)
-        etPass.addTextChangedListener(watcher)
+        findViewById<Button>(R.id.btnSignIn).setOnClickListener { signIn() }
+        findViewById<Button>(R.id.btnCheck).setOnClickListener { checkLoginTime() }
 
         if (Cfg.autoLogin(this) && Cfg.username(this).isNotBlank()) {
             etUser.setText(Cfg.username(this))
@@ -92,10 +90,20 @@ class LoginActivity : AppCompatActivity() {
             saveRow.visibility = View.VISIBLE
         }
 
-        findViewById<Button>(R.id.btnSignIn).setOnClickListener { signIn() }
-        findViewById<TextView>(R.id.tvSettingsLink).setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+        val watcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (!saveRowShown && !s.isNullOrEmpty()) {
+                    saveRowShown = true
+                    saveRow.alpha = 0f
+                    saveRow.visibility = View.VISIBLE
+                    saveRow.animate().alpha(1f).setDuration(260).start()
+                }
+            }
         }
+        etUser.addTextChangedListener(watcher)
+        etPass.addTextChangedListener(watcher)
 
         typeSignature()
     }
@@ -105,30 +113,40 @@ class LoginActivity : AppCompatActivity() {
         Cfg.ensureToday(this)
         AlarmScheduler.scheduleMidnight(this)
         refreshStrip()
-        ticker.removeCallbacks(tick)
-        ticker.post(tick)
-        // came back from the accessibility settings: carry on with the sign-in
-        if (awaitingPermission && ReaderHelp.enabled(this)) {
-            awaitingPermission = false
-            proceed()
+        handler.removeCallbacks(tick)
+        handler.post(tick)
+
+        // came back from a settings screen: if the action was waiting on permissions, run it now
+        val pending = pendingAction
+        if (pending != null && Perms.all(this)) {
+            pendingAction = null
+            sheet?.dismiss()
+            sheet = null
+            pending.invoke()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        ticker.removeCallbacks(tick)
+        handler.removeCallbacks(tick)
     }
 
-    /** Three segments above, the break line beneath - all derived, nothing accumulated. */
+    override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null)
+        super.onDestroy()
+    }
+
+    // ---------------------------------------------------------------- timers
+
     private fun refreshStrip() {
         val pin = Cfg.punchIn(this)
         val pout = Cfg.punchOut(this)
-        val hasTimes = pin.isNotBlank()
-        strip.visibility = if (hasTimes) View.VISIBLE else View.GONE
+        val has = pin.isNotBlank()
+        strip.visibility = if (has) View.VISIBLE else View.GONE
 
-        tvPin.text = if (hasTimes) pin else "--:--:--"
+        tvPin.text = if (has) pin else "--:--:--"
         tvPout.text = if (pout.isNotBlank()) pout else "--:--:--"
-        tvActive.text = if (hasTimes) Day.hms(Day.activeSecs(this)) else "--:--:--"
+        tvActive.text = if (has) Day.hms(Day.activeSecs(this)) else "--:--:--"
 
         val onBreak = Day.isOnBreak(this)
         val limit = Cfg.breakLimitMin(this)
@@ -154,65 +172,121 @@ class LoginActivity : AppCompatActivity() {
         refreshStrip()
     }
 
-    /** The save option appears the first time the user types anything. */
-    private fun showSaveOption() {
-        saveRow.alpha = 0f
-        saveRow.visibility = View.VISIBLE
-        saveRow.animate().alpha(1f).setDuration(280).start()
-    }
+    // ---------------------------------------------------------------- actions
 
     private fun signIn() {
+        if (!validateFields()) return
+        withPermissions {
+            saveOrClear()
+            openPortal()
+        }
+    }
+
+    /** Reads the portal and comes straight back, without leaving you signed in on this screen. */
+    private fun checkLoginTime() {
+        if (!validateFields()) return
+        if (!Cfg.autoLogin(this)) {
+            Toast.makeText(this, "Tick Save details so the app can fill your login", Toast.LENGTH_LONG).show()
+            return
+        }
+        withPermissions {
+            Cfg.setPendingReturn(this, true)
+            openPortal()
+        }
+    }
+
+    private fun validateFields(): Boolean {
         val user = etUser.text.toString().trim()
         val pass = etPass.text.toString()
         if (user.isEmpty() || pass.isEmpty()) {
             Toast.makeText(this, "Enter your employee ID and password", Toast.LENGTH_SHORT).show()
-            return
+            return false
         }
-
-        if (!ReaderHelp.enabled(this)) {
-            awaitingPermission = true
-            showPermissionSheet()
-            return
-        }
-        proceed()
+        return true
     }
 
-    /** The "one more step" sheet, shown the moment Sign In is tapped without accessibility. */
-    private fun showPermissionSheet() {
-        val sheet = BottomSheetDialog(this)
-        val view = layoutInflater.inflate(R.layout.sheet_permission, null)
-        sheet.setContentView(view)
-        view.findViewById<Button>(R.id.btnOpenSettings).setOnClickListener {
-            sheet.dismiss()
-            runCatching { startActivity(Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+    private fun withPermissions(action: () -> Unit) {
+        if (Perms.all(this)) {
+            action()
+            return
         }
-        view.findViewById<Button>(R.id.btnNotNow).setOnClickListener {
-            awaitingPermission = false
-            sheet.dismiss()
-        }
-        sheet.show()
+        pendingAction = action
+        showPermissionSheet()
     }
 
-    private fun proceed() {
+    private fun saveOrClear() {
         val user = etUser.text.toString().trim()
         val pass = etPass.text.toString()
-
         if (cbSave.isChecked) {
             Cfg.setUsername(this, user)
             Cfg.setPassword(this, pass)
             Cfg.setAutoLogin(this, true)
-            Cfg.setPunchIn(this, "")
-            Cfg.setPunchOut(this, "")
-            Toast.makeText(this, "Saved on this phone (encrypted)", Toast.LENGTH_SHORT).show()
         } else {
-            // Unticked: forget everything, so the next launch starts with empty fields.
             Cfg.setUsername(this, "")
             Cfg.setPassword(this, "")
             Cfg.setAutoLogin(this, false)
         }
+        Cfg.setPendingReturn(this, true)
+    }
 
-        openPortal()
-        finish()
+    private fun showPermissionSheet() {
+        val d = BottomSheetDialog(this)
+        val v = layoutInflater.inflate(R.layout.sheet_permission, null)
+        d.setContentView(v)
+        sheet = d
+
+        fun paintSheet() {
+            v.findViewById<TextView>(R.id.tvPermTitle).text =
+                if (Perms.all(this)) "All set" else "A few permissions first"
+            v.findViewById<TextView>(R.id.tvPermCount).text =
+                Perms.count(this).toString() + " of 4 enabled"
+            v.findViewById<TextView>(R.id.tickA11y).text = if (Perms.accessibility(this)) "✓" else "○"
+            v.findViewById<TextView>(R.id.tickNotif).text = if (Perms.notifications(this)) "✓" else "○"
+            v.findViewById<TextView>(R.id.tickExact).text = if (Perms.exactAlarms(this)) "✓" else "○"
+            v.findViewById<TextView>(R.id.tickOverlay).text = if (Perms.overlay(this)) "✓" else "○"
+            v.findViewById<Button>(R.id.btnPermContinue).isEnabled = true
+        }
+        paintSheet()
+
+        v.findViewById<View>(R.id.rowA11y).setOnClickListener {
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        }
+        v.findViewById<View>(R.id.rowNotif).setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(
+                    this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 41
+                )
+            } else {
+                startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, packageName))
+            }
+        }
+        v.findViewById<View>(R.id.rowExact).setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                    Uri.parse("package:" + packageName)))
+            }
+        }
+        v.findViewById<View>(R.id.rowOverlay).setOnClickListener {
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + packageName)))
+        }
+        v.findViewById<Button>(R.id.btnPermContinue).setOnClickListener {
+            if (Perms.all(this)) {
+                val action = pendingAction
+                pendingAction = null
+                d.dismiss(); sheet = null
+                action?.invoke()
+            } else {
+                paintSheet()
+                Toast.makeText(this, "Still missing a permission", Toast.LENGTH_SHORT).show()
+            }
+        }
+        v.findViewById<Button>(R.id.btnPermLater).setOnClickListener {
+            pendingAction = null
+            d.dismiss(); sheet = null
+        }
+        d.show()
     }
 
     private fun openPortal() {
@@ -222,16 +296,15 @@ class LoginActivity : AppCompatActivity() {
                 .setShowTitle(false)
                 .setUrlBarHidingEnabled(true)
                 .setToolbarColor(android.graphics.Color.parseColor("#0F2A55"))
-                .setNavigationBarColor(android.graphics.Color.parseColor("#0F2A55"))
+                .setNavigationBarColor(android.graphics.Color.parseColor("#08132A"))
                 .build()
                 .launchUrl(this, uri)
         }.isSuccess
-        if (!opened) {
-            runCatching { startActivity(Intent(Intent.ACTION_VIEW, uri)) }
-        }
+        if (!opened) runCatching { startActivity(Intent(Intent.ACTION_VIEW, uri)) }
     }
 
-    /** Types "by Prateek" with uneven delays, then draws the underline. */
+    // ---------------------------------------------------------------- signature
+
     private fun typeSignature() {
         var i = 0
         fun step() {
@@ -247,10 +320,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun drawRule() {
-        val target = (132 * resources.displayMetrics.density).toInt()
-        val params = sigRule.layoutParams
-        params.width = 0
-        sigRule.layoutParams = params
+        val target = (120 * resources.displayMetrics.density).toInt()
         val anim = android.animation.ValueAnimator.ofInt(0, target)
         anim.duration = 900
         anim.addUpdateListener { a ->
@@ -259,10 +329,5 @@ class LoginActivity : AppCompatActivity() {
             sigRule.layoutParams = p
         }
         anim.start()
-    }
-
-    override fun onDestroy() {
-        handler.removeCallbacksAndMessages(null)
-        super.onDestroy()
     }
 }
