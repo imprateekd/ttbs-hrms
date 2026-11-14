@@ -209,7 +209,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:layout_marginBottom="18dp"
-            android:text="build 8 - GeckoView desktop UA"
+            android:text="build 9 - Chrome desktop UA"
             android:textColor="#A9B4C4"
             android:textSize="10sp" />
     </LinearLayout>

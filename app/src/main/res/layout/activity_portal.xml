@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="TTBS HRMS"
+            android:text="TTBS HRMS · desktop"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             android:textStyle="bold" />

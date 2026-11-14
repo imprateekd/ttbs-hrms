@@ -12,8 +12,11 @@ import org.mozilla.geckoview.GeckoSessionSettings
  */
 object GeckoShell {
 
+    // The portal says "Best Viewed On Chrome / Edge", so present the same desktop Chrome the
+    // user's phone already logs in with.
     private const val DESKTOP_UA =
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0"
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
+            "Chrome/121.0.0.0 Safari/537.36"
 
     private var runtime: GeckoRuntime? = null
 
