@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Cfg.ensureToday(this)
 
+        findViewById<Button>(R.id.btn12).setOnClickListener { setFormat(false) }
+        findViewById<Button>(R.id.btn24).setOnClickListener { setFormat(true) }
         findViewById<View>(R.id.rowResetBreak).setOnClickListener { confirmResetBreak() }
         findViewById<View>(R.id.rowClear).setOnClickListener { confirmClear() }
 
@@ -69,20 +71,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun refresh() {
         val pin = Cfg.punchIn(this)
-        findViewById<TextView>(R.id.tvSetPin).text = if (pin.isBlank()) "--:--:--" else pin
-        findViewById<TextView>(R.id.tvSetPout).text = Cfg.punchOut(this).ifBlank { "--:--:--" }
-        findViewById<TextView>(R.id.tvSetActive).text =
-            if (pin.isBlank()) "--:--:--" else Day.hms(Day.activeSecs(this))
+        findViewById<TextView>(R.id.tvSetPin).text = Fmt.time(this, pin)
+        findViewById<TextView>(R.id.tvSetPout).text = Fmt.time(this, Cfg.punchOut(this))
+        findViewById<TextView>(R.id.tvSetActive).text = Fmt.duration(Day.activeSecs(this))
         findViewById<TextView>(R.id.tvSetBreak).text =
-            Day.hms(Day.breakTodaySecs(this)) + " / " + Cfg.breakLimitMin(this) + "m"
+            Fmt.duration(Day.breakTodaySecs(this)) + " / " + Cfg.breakLimitMin(this) + "m"
 
         val mins = Cfg.deadline(this)
-        findViewById<TextView>(R.id.tvDeadline).text =
-            String.format(java.util.Locale.US, "%02d:%02d", mins / 60, mins % 60)
+        findViewById<TextView>(R.id.tvDeadline).text = Fmt.deadlineLabel(this)
         findViewById<TextView>(R.id.tvRepeat).text = Cfg.repeat(this).toString() + "m"
         findViewById<TextView>(R.id.tvBreakLimit).text = Cfg.breakLimitMin(this).toString() + "m"
 
         findViewById<SwitchCompat>(R.id.switchEnabled).isChecked = Cfg.enabled(this)
+        paintFormat()
 
         findViewById<TextView>(R.id.tvA11y).text = onOff(Perms.accessibility(this))
         findViewById<TextView>(R.id.tvNotif).text = onOff(Perms.notifications(this))
@@ -91,6 +92,24 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.tvEmpId).text =
             Cfg.username(this).ifBlank { "not saved" }
+    }
+
+    private fun setFormat(hour24: Boolean) {
+        Cfg.setHour24(this, hour24)
+        refresh()
+    }
+
+    private fun paintFormat() {
+        val h24 = Cfg.hour24(this)
+        fun style(id: Int, on: Boolean) {
+            val b = findViewById<Button>(id)
+            b.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                if (on) 0xFF0F2A55.toInt() else 0xFFEEF2F8.toInt()
+            )
+            b.setTextColor(if (on) 0xFFFFFFFF.toInt() else 0xFF33445C.toInt())
+        }
+        style(R.id.btn12, !h24)
+        style(R.id.btn24, h24)
     }
 
     private fun onOff(v: Boolean) = if (v) "on" else "off"

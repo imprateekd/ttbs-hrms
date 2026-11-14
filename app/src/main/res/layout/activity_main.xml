@@ -124,6 +124,20 @@
             </LinearLayout>
 
             <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="Time format" />
+
+                <Button
+                    android:id="@+id/btn12"
+                    style="@style/FmtBtn"
+                    android:text="12h" />
+
+                <Button
+                    android:id="@+id/btn24"
+                    style="@style/FmtBtn"
+                    android:text="24h" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
                 <TextView style="@style/SettingLabel" android:text="Break limit (per day)" />
                 <Button android:id="@+id/btnBreakMinus" style="@style/StepBtn" android:text="−" />
                 <TextView android:id="@+id/tvBreakLimit" style="@style/SettingValue" android:text="45m" />

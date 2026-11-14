@@ -204,6 +204,50 @@
                 android:progressTint="#FFB020" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/onboardCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="11dp"
+            android:background="@drawable/bg_onboard"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvOnboard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Set your punch-out time so that you won't miss your punch-outs!"
+                android:textColor="#CFE0FF"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/btnOnboardSet"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:backgroundTint="#2F7DFF"
+                android:minWidth="0dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="Set"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnOnboardClose"
+                android:layout_width="30dp"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:text="✕"
+                android:textColor="#7F93B3"
+                android:textSize="11sp" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

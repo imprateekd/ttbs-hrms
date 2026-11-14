@@ -79,6 +79,11 @@ class LoginActivity : AppCompatActivity() {
         breakFooter = findViewById(R.id.breakFooter)
 
         btnBreak.setOnClickListener { toggleBreak() }
+        findViewById<Button>(R.id.btnOnboardSet).setOnClickListener { askPunchOutTime() }
+        findViewById<TextView>(R.id.btnOnboardClose).setOnClickListener {
+            Cfg.setOnboarded(this, true)
+            findViewById<View>(R.id.onboardCard).visibility = View.GONE
+        }
         findViewById<ImageView>(R.id.btnSettings).setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
@@ -115,6 +120,8 @@ class LoginActivity : AppCompatActivity() {
         Cfg.ensureToday(this)
         AlarmScheduler.scheduleMidnight(this)
         refreshStrip()
+        findViewById<View>(R.id.onboardCard).visibility =
+            if (Cfg.onboarded(this)) View.GONE else View.VISIBLE
         handler.removeCallbacks(tick)
         handler.post(tick)
 
@@ -146,14 +153,14 @@ class LoginActivity : AppCompatActivity() {
         val has = pin.isNotBlank()
         strip.visibility = if (has) View.VISIBLE else View.GONE
 
-        tvPin.text = if (has) pin else "--:--:--"
-        tvPout.text = if (pout.isNotBlank()) pout else "--:--:--"
-        tvActive.text = if (has) Day.hms(Day.activeSecs(this)) else "--:--:--"
+        tvPin.text = if (has) Fmt.time(this, pin) else "--:--"
+        tvPout.text = if (pout.isNotBlank()) Fmt.time(this, pout) else "--:--"
+        tvActive.text = if (has) Fmt.duration(Day.activeSecs(this)) else "--:--"
 
         val onBreak = Day.isOnBreak(this)
         val limit = Cfg.breakLimitMin(this)
         val used = Day.breakTodaySecs(this)
-        tvBreak.text = Day.hms(used) + " / " + limit + "m"
+        tvBreak.text = Fmt.durationTicking(used) + " / " + limit + "m"
         tvBreak.setTextColor(if (onBreak) 0xFFFFB020.toInt() else 0xFFB9CBEA.toInt())
         pbBreak.progress = ((used * 100) / (limit * 60L)).coerceIn(0L, 100L).toInt()
         // the footer goes amber while a break is running, so the state is visible at a glance
@@ -163,6 +170,25 @@ class LoginActivity : AppCompatActivity() {
             if (onBreak) 0xFF0F766E.toInt() else 0xFFFFB020.toInt()
         )
         btnBreak.setTextColor(if (onBreak) 0xFFFFFFFF.toInt() else 0xFF3A2600.toInt())
+    }
+
+    /** First run: the punch-out time the reminder should ring at. */
+    private fun askPunchOutTime() {
+        val mins = Cfg.deadline(this)
+        val picker = android.app.TimePickerDialog(
+            this,
+            { _, h, m ->
+                Cfg.setDeadline(this, h * 60 + m)
+                Cfg.setEnabled(this, true)
+                AlarmScheduler.scheduleAt(this, AlarmScheduler.nextDeadlineMillis(this))
+                Cfg.setOnboarded(this, true)
+                findViewById<View>(R.id.onboardCard).visibility = View.GONE
+                Toast.makeText(this, "Reminder set for " + Fmt.deadlineLabel(this), Toast.LENGTH_SHORT).show()
+            },
+            mins / 60, mins % 60, Cfg.hour24(this)
+        )
+        picker.setTitle("Punch-out time")
+        picker.show()
     }
 
     private fun toggleBreak() {

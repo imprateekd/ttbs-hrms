@@ -87,6 +87,13 @@ object Cfg {
         sp(c).edit().putString("lastResult", "$stamp — $v").apply()
     }
 
+    /** false = 12-hour clock with AM/PM, true = 24-hour. Applies to clock times only. */
+    fun hour24(c: Context): Boolean = sp(c).getBoolean("hour24", false)
+    fun setHour24(c: Context, v: Boolean) { sp(c).edit().putBoolean("hour24", v).apply() }
+
+    fun onboarded(c: Context): Boolean = sp(c).getBoolean("onboarded", false)
+    fun setOnboarded(c: Context, v: Boolean) { sp(c).edit().putBoolean("onboarded", v).apply() }
+
     fun breakTotalSec(c: Context): Long = sp(c).getLong("breakTotal", 0L)
     fun setBreakTotalSec(c: Context, v: Long) { sp(c).edit().putLong("breakTotal", v).apply() }
 
