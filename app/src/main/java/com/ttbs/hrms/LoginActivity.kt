@@ -45,6 +45,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var pbBreak: ProgressBar
     private lateinit var btnBreak: Button
     private lateinit var breakFooter: View
+    private lateinit var dotActive: View
+    private lateinit var dotBreak: View
+    private lateinit var lblBreak: TextView
+    private var pulse: android.animation.ObjectAnimator? = null
 
     private val handler = Handler(Looper.getMainLooper())
     private var saveRowShown = false
@@ -78,6 +82,9 @@ class LoginActivity : AppCompatActivity() {
         pbBreak = findViewById(R.id.pbBreak)
         btnBreak = findViewById(R.id.btnBreak)
         breakFooter = findViewById(R.id.breakFooter)
+        dotActive = findViewById(R.id.dotActive)
+        dotBreak = findViewById(R.id.dotBreak)
+        lblBreak = findViewById(R.id.lblBreak)
 
         btnBreak.setOnClickListener { toggleBreak() }
         // C3: tapping the times flips the whole app between 12 and 24 hour
@@ -150,6 +157,12 @@ class LoginActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         handler.removeCallbacks(tick)
+        pulse?.pause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        pulse?.resume()
     }
 
     override fun onDestroy() {
@@ -171,18 +184,27 @@ class LoginActivity : AppCompatActivity() {
         tvActive.text = if (has) Fmt.duration(Day.activeSecs(this)) else "--:--"
 
         val onBreak = Day.isOnBreak(this)
+        val punchedOut = pout.isNotBlank()
         val limit = Cfg.breakLimitMin(this)
         val used = Day.breakTodaySecs(this)
+
         tvBreak.text = Fmt.durationTicking(used) + " / " + limit + "m"
         tvBreak.setTextColor(if (onBreak) 0xFFFFB020.toInt() else 0xFFB9CBEA.toInt())
+        lblBreak.setTextColor(if (onBreak) 0xFFFFB020.toInt() else 0xFF7F93B3.toInt())
         pbBreak.progress = ((used * 100) / (limit * 60L)).coerceIn(0L, 100L).toInt()
-        // the footer goes amber while a break is running, so the state is visible at a glance
-        breakFooter.setBackgroundColor(if (onBreak) 0x1FFFB020 else 0x05FFFFFF)
+
+        // while on a break the whole row reads as active; otherwise it stays quiet
+        breakFooter.setBackgroundColor(if (onBreak) 0x29FFB020 else 0x05FFFFFF)
         btnBreak.text = if (onBreak) "End break" else "Start break"
         btnBreak.backgroundTintList = android.content.res.ColorStateList.valueOf(
             if (onBreak) 0xFF0F766E.toInt() else 0xFFFFB020.toInt()
         )
         btnBreak.setTextColor(if (onBreak) 0xFFFFFFFF.toInt() else 0xFF3A2600.toInt())
+
+        // one pulse, on whatever is actually running: the break, or the working clock
+        dotBreak.visibility = if (onBreak) View.VISIBLE else View.GONE
+        dotActive.visibility = if (!onBreak && has && !punchedOut) View.VISIBLE else View.GONE
+        updatePulse()
     }
 
     /** First run: the punch-out time the reminder should ring at. */
@@ -202,6 +224,29 @@ class LoginActivity : AppCompatActivity() {
         )
         picker.setTitle("Punch-out time")
         picker.show()
+    }
+
+    /** The pulse follows the live thing, and stops when nothing is running. */
+    private fun updatePulse() {
+        val target = when {
+            dotBreak.visibility == View.VISIBLE -> dotBreak
+            dotActive.visibility == View.VISIBLE -> dotActive
+            else -> null
+        }
+        if (target == null) {
+            pulse?.cancel()
+            pulse = null
+            dotBreak.alpha = 1f
+            dotActive.alpha = 1f
+            return
+        }
+        if (pulse?.isRunning == true) return
+        pulse = android.animation.ObjectAnimator.ofFloat(target, "alpha", 1f, 0.3f).apply {
+            duration = 800
+            repeatCount = android.animation.ValueAnimator.INFINITE
+            repeatMode = android.animation.ValueAnimator.REVERSE
+            start()
+        }
     }
 
     private fun toggleBreak() {

@@ -46,10 +46,10 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
-                android:paddingStart="9dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="9dp"
-                android:paddingBottom="10dp">
+                android:paddingStart="10dp"
+                android:paddingTop="13dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="13dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -74,7 +74,7 @@
                         android:letterSpacing="-0.02"
                         android:text="--:--"
                         android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
+                        android:textSize="19sp" />
                 </LinearLayout>
 
                 <View
@@ -104,7 +104,7 @@
                         android:fontFamily="monospace"
                         android:text="--:--"
                         android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
+                        android:textSize="19sp" />
                 </LinearLayout>
 
                 <View
@@ -119,13 +119,28 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:letterSpacing="0.1"
-                        android:text="ACTIVE"
-                        android:textColor="#7F93B3"
-                        android:textSize="6sp" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/dotActive"
+                            android:layout_width="5dp"
+                            android:layout_height="5dp"
+                            android:layout_marginEnd="4dp"
+                            android:background="@drawable/bg_dot_gold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.1"
+                            android:text="ACTIVE"
+                            android:textColor="#7F93B3"
+                            android:textSize="6sp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvActive"
@@ -135,7 +150,7 @@
                         android:letterSpacing="-0.02"
                         android:text="00:00:00"
                         android:textColor="#FFD66E"
-                        android:textSize="18sp" />
+                        android:textSize="19sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -149,9 +164,19 @@
                 android:paddingStart="10dp"
                 android:paddingTop="9dp"
                 android:paddingEnd="10dp"
-                android:paddingBottom="9dp">
+                android:paddingBottom="9dp"
+                android:layout_marginTop="2dp">
+
+                <View
+                    android:id="@+id/dotBreak"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/bg_dot_amber"
+                    android:visibility="gone" />
 
                 <TextView
+                    android:id="@+id/lblBreak"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:letterSpacing="0.12"
@@ -197,7 +222,7 @@
 
         <!-- LOGO IN THE MIDDLE -->
         <ImageView
-            android:layout_width="118dp"
+            android:layout_width="132dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
