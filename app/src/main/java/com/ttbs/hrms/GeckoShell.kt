@@ -27,8 +27,9 @@ object GeckoShell {
 
     fun newSession(context: Context): GeckoSession {
         val settings = GeckoSessionSettings.Builder()
-            .userAgentMode(GeckoSessionSettings.USER_AGENT_MODE_MOBILE)
+            .userAgentMode(GeckoSessionSettings.USER_AGENT_MODE_DESKTOP)
             .userAgentOverride("")
+            .viewportMode(GeckoSessionSettings.VIEWPORT_MODE_DESKTOP)
             .build()
         return GeckoSession(settings).also { it.open(runtime(context)) }
     }
