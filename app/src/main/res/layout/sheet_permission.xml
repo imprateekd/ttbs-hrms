@@ -4,33 +4,54 @@
     android:layout_height="wrap_content"
     android:background="#0D1C33"
     android:orientation="vertical"
-    android:padding="18dp">
+    android:paddingStart="16dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
 
     <View
         android:layout_width="34dp"
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="12dp"
         android:background="#2A3F60" />
 
-    <TextView
-        android:id="@+id/tvPermTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="A few permissions first"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tvPermCount"
+        <TextView
+            android:id="@+id/tvPermTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Permissions"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPermCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="0 of 4"
+            android:textColor="#8FA6C8"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pbPerm"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="10dp"
-        android:text="0 of 4 enabled"
-        android:textColor="#9FB6D8"
-        android:textSize="11sp" />
+        android:layout_height="4dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="8dp"
+        android:max="4"
+        android:progress="0"
+        android:progressTint="#2F7DFF" />
 
     <LinearLayout
         android:id="@+id/rowA11y"
@@ -39,8 +60,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp">
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp">
 
         <TextView
             android:id="@+id/tickA11y"
@@ -50,13 +71,40 @@
             android:textColor="#35D07F"
             android:textSize="13sp" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Accessibility — signs you in through Chrome and reads your punch times"
-            android:textColor="#DBE8FF"
-            android:textSize="11sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nameA11y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accessibility"
+                android:textColor="#DBE8FF"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="signs in, reads your times"
+                android:textColor="#6E8AAE"
+                android:textSize="8sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/openA11y"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:backgroundTint="#16263F"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Open"
+            android:textAllCaps="false"
+            android:textColor="#9FC4FF"
+            android:textSize="8sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -66,8 +114,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp">
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp">
 
         <TextView
             android:id="@+id/tickNotif"
@@ -77,13 +125,40 @@
             android:textColor="#35D07F"
             android:textSize="13sp" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Notifications — so the reminder can reach you"
-            android:textColor="#DBE8FF"
-            android:textSize="11sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nameNotif"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notifications"
+                android:textColor="#DBE8FF"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="so the reminder can reach you"
+                android:textColor="#6E8AAE"
+                android:textSize="8sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/openNotif"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:backgroundTint="#16263F"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Open"
+            android:textAllCaps="false"
+            android:textColor="#9FC4FF"
+            android:textSize="8sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -93,8 +168,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp">
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp">
 
         <TextView
             android:id="@+id/tickExact"
@@ -104,13 +179,40 @@
             android:textColor="#35D07F"
             android:textSize="13sp" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Exact alarms — so 6:00 PM means 6:00 PM"
-            android:textColor="#DBE8FF"
-            android:textSize="11sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nameExact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Exact alarms"
+                android:textColor="#DBE8FF"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6:00 PM means 6:00 PM"
+                android:textColor="#6E8AAE"
+                android:textSize="8sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/openExact"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:backgroundTint="#16263F"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Open"
+            android:textAllCaps="false"
+            android:textColor="#9FC4FF"
+            android:textSize="8sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -120,8 +222,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp">
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp">
 
         <TextView
             android:id="@+id/tickOverlay"
@@ -131,13 +233,40 @@
             android:textColor="#35D07F"
             android:textSize="13sp" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Display over other apps — so the reminder can appear over Chrome"
-            android:textColor="#DBE8FF"
-            android:textSize="11sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nameOverlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Display over other apps"
+                android:textColor="#DBE8FF"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="reminder over Chrome"
+                android:textColor="#6E8AAE"
+                android:textSize="8sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/openOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:backgroundTint="#16263F"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Open"
+            android:textAllCaps="false"
+            android:textColor="#9FC4FF"
+            android:textSize="8sp" />
     </LinearLayout>
 
     <Button

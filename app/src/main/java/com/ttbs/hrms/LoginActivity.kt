@@ -282,29 +282,15 @@ class LoginActivity : AppCompatActivity() {
         permSheetView = v
         paintPermSheet()
 
-        v.findViewById<View>(R.id.rowA11y).setOnClickListener {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-        }
-        v.findViewById<View>(R.id.rowNotif).setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 41
-                )
-            } else {
-                startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                    .putExtra(Settings.EXTRA_APP_PACKAGE, packageName))
-            }
-        }
-        v.findViewById<View>(R.id.rowExact).setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
-                    Uri.parse("package:" + packageName)))
-            }
-        }
-        v.findViewById<View>(R.id.rowOverlay).setOnClickListener {
-            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + packageName)))
-        }
+        v.findViewById<View>(R.id.openA11y).setOnClickListener { openAccessibility() }
+        v.findViewById<View>(R.id.openNotif).setOnClickListener { openNotifications() }
+        v.findViewById<View>(R.id.openExact).setOnClickListener { openExactAlarms() }
+        v.findViewById<View>(R.id.openOverlay).setOnClickListener { openOverlay() }
+
+        v.findViewById<View>(R.id.rowA11y).setOnClickListener { openAccessibility() }
+        v.findViewById<View>(R.id.rowNotif).setOnClickListener { openNotifications() }
+        v.findViewById<View>(R.id.rowExact).setOnClickListener { openExactAlarms() }
+        v.findViewById<View>(R.id.rowOverlay).setOnClickListener { openOverlay() }
         v.findViewById<Button>(R.id.btnPermContinue).setOnClickListener {
             if (Perms.all(this)) {
                 val action = pendingAction
@@ -324,19 +310,38 @@ class LoginActivity : AppCompatActivity() {
         d.show()
     }
 
-    /** Repaints the tick list from live permission state. */
+    /** Repaints the list, the bar and the button from live permission state. */
     private fun paintPermSheet() {
         val v = permSheetView ?: return
-        v.findViewById<TextView>(R.id.tvPermTitle).text =
-            if (Perms.all(this)) "All set" else "A few permissions first"
-        v.findViewById<TextView>(R.id.tvPermCount).text =
-            Perms.count(this).toString() + " of 4 enabled"
-        v.findViewById<TextView>(R.id.tickA11y).text = if (Perms.accessibility(this)) "✓" else "○"
-        v.findViewById<TextView>(R.id.tickNotif).text = if (Perms.notifications(this)) "✓" else "○"
-        v.findViewById<TextView>(R.id.tickExact).text = if (Perms.exactAlarms(this)) "✓" else "○"
-        v.findViewById<TextView>(R.id.tickOverlay).text = if (Perms.overlay(this)) "✓" else "○"
-        v.findViewById<Button>(R.id.btnPermContinue).text =
-            if (Perms.all(this)) "Continue" else "Check again"
+        val all = Perms.all(this)
+        val count = Perms.count(this)
+
+        v.findViewById<TextView>(R.id.tvPermTitle).text = if (all) "All set" else "Permissions"
+        v.findViewById<TextView>(R.id.tvPermCount).text = count.toString() + " of 4"
+        v.findViewById<ProgressBar>(R.id.pbPerm).progress = count
+
+        fun row(tick: Int, name: Int, open: Int, granted: Boolean) {
+            v.findViewById<TextView>(tick).text = if (granted) "✓" else "○"
+            v.findViewById<TextView>(tick).setTextColor(
+                if (granted) 0xFF35D07F.toInt() else 0x66FFFFFF
+            )
+            v.findViewById<TextView>(name).setTypeface(
+                null,
+                if (granted) android.graphics.Typeface.NORMAL else android.graphics.Typeface.BOLD
+            )
+            v.findViewById<View>(open).visibility = if (granted) View.GONE else View.VISIBLE
+        }
+        row(R.id.tickA11y, R.id.nameA11y, R.id.openA11y, Perms.accessibility(this))
+        row(R.id.tickNotif, R.id.nameNotif, R.id.openNotif, Perms.notifications(this))
+        row(R.id.tickExact, R.id.nameExact, R.id.openExact, Perms.exactAlarms(this))
+        row(R.id.tickOverlay, R.id.nameOverlay, R.id.openOverlay, Perms.overlay(this))
+
+        val go = v.findViewById<Button>(R.id.btnPermContinue)
+        go.text = if (all) "Continue" else "Open what is missing"
+        go.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            if (all) 0xFF2F7DFF.toInt() else 0xFF16263F.toInt()
+        )
+        go.setTextColor(if (all) 0xFFFFFFFF.toInt() else 0xFF5F7D9E.toInt())
     }
 
     override fun onRequestPermissionsResult(
@@ -346,6 +351,37 @@ class LoginActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         paintPermSheet()
+    }
+
+    private fun openAccessibility() {
+        runCatching { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+    }
+
+    private fun openNotifications() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 41)
+        } else {
+            runCatching {
+                startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, packageName))
+            }
+        }
+    }
+
+    private fun openExactAlarms() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            runCatching {
+                startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                    Uri.parse("package:" + packageName)))
+            }
+        }
+    }
+
+    private fun openOverlay() {
+        runCatching {
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + packageName)))
+        }
     }
 
     private fun openPortal() {
