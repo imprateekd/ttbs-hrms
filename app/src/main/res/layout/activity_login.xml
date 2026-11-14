@@ -53,8 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="11dp"
             android:background="@drawable/bg_strip"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/timerRow"

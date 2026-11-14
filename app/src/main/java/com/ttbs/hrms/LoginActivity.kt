@@ -50,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
     private var saveRowShown = false
     private var pendingAction: (() -> Unit)? = null
     private var sheet: BottomSheetDialog? = null
+    private var permSheetView: View? = null
     private val signature = "by Prateek"
 
     private val tick = object : Runnable {
@@ -130,6 +131,7 @@ class LoginActivity : AppCompatActivity() {
         Cfg.ensureToday(this)
         AlarmScheduler.scheduleMidnight(this)
         refreshStrip()
+        paintPermSheet()
         findViewById<View>(R.id.onboardCard).visibility =
             if (Cfg.onboarded(this)) View.GONE else View.VISIBLE
         handler.removeCallbacks(tick)
@@ -161,7 +163,8 @@ class LoginActivity : AppCompatActivity() {
         val pin = Cfg.punchIn(this)
         val pout = Cfg.punchOut(this)
         val has = pin.isNotBlank()
-        strip.visibility = if (has) View.VISIBLE else View.GONE
+        // the card is always on screen: with no readings yet it shows --:-- rather than vanishing
+        strip.visibility = View.VISIBLE
 
         tvPin.text = if (has) Fmt.time(this, pin) else "--:--"
         tvPout.text = if (pout.isNotBlank()) Fmt.time(this, pout) else "--:--"
@@ -276,19 +279,8 @@ class LoginActivity : AppCompatActivity() {
         val v = layoutInflater.inflate(R.layout.sheet_permission, null)
         d.setContentView(v)
         sheet = d
-
-        fun paintSheet() {
-            v.findViewById<TextView>(R.id.tvPermTitle).text =
-                if (Perms.all(this)) "All set" else "A few permissions first"
-            v.findViewById<TextView>(R.id.tvPermCount).text =
-                Perms.count(this).toString() + " of 4 enabled"
-            v.findViewById<TextView>(R.id.tickA11y).text = if (Perms.accessibility(this)) "✓" else "○"
-            v.findViewById<TextView>(R.id.tickNotif).text = if (Perms.notifications(this)) "✓" else "○"
-            v.findViewById<TextView>(R.id.tickExact).text = if (Perms.exactAlarms(this)) "✓" else "○"
-            v.findViewById<TextView>(R.id.tickOverlay).text = if (Perms.overlay(this)) "✓" else "○"
-            v.findViewById<Button>(R.id.btnPermContinue).isEnabled = true
-        }
-        paintSheet()
+        permSheetView = v
+        paintPermSheet()
 
         v.findViewById<View>(R.id.rowA11y).setOnClickListener {
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
@@ -320,15 +312,40 @@ class LoginActivity : AppCompatActivity() {
                 d.dismiss(); sheet = null
                 action?.invoke()
             } else {
-                paintSheet()
+                paintPermSheet()
                 Toast.makeText(this, "Still missing a permission", Toast.LENGTH_SHORT).show()
             }
         }
         v.findViewById<Button>(R.id.btnPermLater).setOnClickListener {
             pendingAction = null
-            d.dismiss(); sheet = null
+            d.dismiss(); sheet = null; permSheetView = null
         }
+        d.setOnDismissListener { if (permSheetView === v) permSheetView = null }
         d.show()
+    }
+
+    /** Repaints the tick list from live permission state. */
+    private fun paintPermSheet() {
+        val v = permSheetView ?: return
+        v.findViewById<TextView>(R.id.tvPermTitle).text =
+            if (Perms.all(this)) "All set" else "A few permissions first"
+        v.findViewById<TextView>(R.id.tvPermCount).text =
+            Perms.count(this).toString() + " of 4 enabled"
+        v.findViewById<TextView>(R.id.tickA11y).text = if (Perms.accessibility(this)) "✓" else "○"
+        v.findViewById<TextView>(R.id.tickNotif).text = if (Perms.notifications(this)) "✓" else "○"
+        v.findViewById<TextView>(R.id.tickExact).text = if (Perms.exactAlarms(this)) "✓" else "○"
+        v.findViewById<TextView>(R.id.tickOverlay).text = if (Perms.overlay(this)) "✓" else "○"
+        v.findViewById<Button>(R.id.btnPermContinue).text =
+            if (Perms.all(this)) "Continue" else "Check again"
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        paintPermSheet()
     }
 
     private fun openPortal() {
