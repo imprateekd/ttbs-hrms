@@ -20,7 +20,7 @@
         android:label="TTBS-HRMS"
         android:supportsRtl="true"
         android:usesCleartextTraffic="false"
-        android:theme="@style/Theme.TTBS-HRMS">
+        android:theme="@style/Theme.TTBS_HRMS">
 
         <activity
             android:name=".MainActivity"
@@ -46,7 +46,7 @@
             android:noHistory="true"
             android:showOnLockScreen="true"
             android:taskAffinity=".check"
-            android:theme="@style/Theme.TTBS-HRMS.Check"
+            android:theme="@style/Theme.TTBS_HRMS.Check"
             android:showWhenLocked="true" />
 
         <activity
@@ -56,7 +56,7 @@
             android:showOnLockScreen="true"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
-            android:theme="@style/Theme.TTBS-HRMS.Alarm" />
+            android:theme="@style/Theme.TTBS_HRMS.Alarm" />
 
         <receiver
             android:name=".AlarmReceiver"
