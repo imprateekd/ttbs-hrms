@@ -30,6 +30,11 @@ jobs:
           yes | sdkmanager "platforms;android-37" 2>&1 | tail -5 || \
           yes | sdkmanager --channel=3 "platforms;android-37" 2>&1 | tail -5 || true
 
+      - name: Install NDK (needed to strip GeckoView's native libraries)
+        run: |
+          yes | sdkmanager --install "ndk;26.1.10909125" 2>&1 | tail -3 || \
+          yes | sdkmanager --install "ndk;27.0.12077973" 2>&1 | tail -3 || true
+
       - name: Show available NDKs
         run: ls -1 $ANDROID_HOME/ndk 2>/dev/null || echo "no NDK preinstalled"
 
