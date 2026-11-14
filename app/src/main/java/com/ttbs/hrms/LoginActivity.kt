@@ -13,9 +13,8 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import android.provider.Settings
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 /**
  * First screen: the portal's own look — logo, employee ID, password — and the signature
@@ -33,10 +32,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var cbSave: CheckBox
     private lateinit var tvSig: TextView
     private lateinit var sigRule: View
-    private lateinit var tvReader: TextView
 
     private val handler = Handler(Looper.getMainLooper())
     private var saveRowShown = false
+    private var awaitingPermission = false
     private val signature = "by Prateek"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +48,6 @@ class LoginActivity : AppCompatActivity() {
         cbSave = findViewById(R.id.cbSave)
         tvSig = findViewById(R.id.tvSig)
         sigRule = findViewById(R.id.sigRule)
-        tvReader = findViewById(R.id.tvReader)
 
         val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
@@ -75,16 +73,17 @@ class LoginActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvSettingsLink).setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
-        findViewById<Button>(R.id.btnReaderHelp).setOnClickListener { ReaderHelp.show(this) }
 
         typeSignature()
     }
 
     override fun onResume() {
         super.onResume()
-        tvReader.visibility = if (ReaderHelp.enabled(this)) View.GONE else View.VISIBLE
-        tvReader.text = "Screen reader is off. Turn it on so the app can read your punch times " +
-            "from Chrome and fill your login. Tap the button below for the steps."
+        // came back from the accessibility settings: carry on with the sign-in
+        if (awaitingPermission && ReaderHelp.enabled(this)) {
+            awaitingPermission = false
+            proceed()
+        }
     }
 
     /** The save option appears the first time the user types anything. */
@@ -101,6 +100,34 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, "Enter your employee ID and password", Toast.LENGTH_SHORT).show()
             return
         }
+
+        if (!ReaderHelp.enabled(this)) {
+            awaitingPermission = true
+            showPermissionSheet()
+            return
+        }
+        proceed()
+    }
+
+    /** The "one more step" sheet, shown the moment Sign In is tapped without accessibility. */
+    private fun showPermissionSheet() {
+        val sheet = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.sheet_permission, null)
+        sheet.setContentView(view)
+        view.findViewById<Button>(R.id.btnOpenSettings).setOnClickListener {
+            sheet.dismiss()
+            runCatching { startActivity(Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+        }
+        view.findViewById<Button>(R.id.btnNotNow).setOnClickListener {
+            awaitingPermission = false
+            sheet.dismiss()
+        }
+        sheet.show()
+    }
+
+    private fun proceed() {
+        val user = etUser.text.toString().trim()
+        val pass = etPass.text.toString()
 
         if (cbSave.isChecked) {
             Cfg.setUsername(this, user)

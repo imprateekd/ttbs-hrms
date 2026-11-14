@@ -135,17 +135,6 @@
             android:background="#4C8DFF" />
 
         <TextView
-            android:id="@+id/tvReader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:background="#12FFFFFF"
-            android:padding="12dp"
-            android:textColor="#B9CBEA"
-            android:textSize="11sp"
-            android:visibility="gone" />
-
-        <TextView
             android:id="@+id/tvSettingsLink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -156,16 +145,5 @@
             android:text="Settings"
             android:textColor="#6E86A8"
             android:textSize="11sp" />
-
-        <Button
-            android:id="@+id/btnReaderHelp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="#173A66"
-            android:text="How to enable the screen reader"
-            android:textAllCaps="false"
-            android:textColor="#DCE8FA"
-            android:textSize="12sp" />
     </LinearLayout>
 </ScrollView>
