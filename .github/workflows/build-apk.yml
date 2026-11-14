@@ -55,3 +55,5 @@ jobs:
           echo "aar: $AAR"
           mkdir -p /tmp/gv && unzip -o -q "$AAR" classes.jar -d /tmp/gv
           javap -classpath /tmp/gv/classes.jar 'org.mozilla.geckoview.GeckoSession$PermissionDelegate' | head -30
+          echo "--- evaluate / load ---"
+          javap -classpath /tmp/gv/classes.jar 'org.mozilla.geckoview.GeckoSession' | grep -iE "evaluate|loadUri|reload|goBack" | head -12
