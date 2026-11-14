@@ -77,12 +77,7 @@ class AlarmActivity : AppCompatActivity() {
     private fun openDashboardInChrome() {
         val url = Cfg.url(this)
         val opened = runCatching {
-            androidx.browser.customtabs.CustomTabsIntent.Builder()
-                .setShowTitle(true)
-                .build()
-                .launchUrl(this, Uri.parse(url))
-        }.isSuccess || runCatching {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            startActivity(Intent(this, PortalActivity::class.java))
         }.isSuccess
         if (!opened) {
             Toast.makeText(this, "No browser found - open the dashboard by hand.", Toast.LENGTH_LONG).show()

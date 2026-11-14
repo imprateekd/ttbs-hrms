@@ -23,7 +23,7 @@
         android:theme="@style/Theme.TTBS_HRMS">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:exported="true"
             android:label="TTBS-HRMS">
             <intent-filter>
@@ -31,6 +31,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="TTBS-HRMS settings" />
+
+        <activity
+            android:name=".PortalActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:label="TTBS HRMS" />
 
         <activity
             android:name=".BrowserActivity"
