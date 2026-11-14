@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
     private fun openDashboard(toast: String? = null) {
         save()
         if (toast != null) Toast.makeText(this, toast, Toast.LENGTH_LONG).show()
-        startActivity(Intent(this, BrowserActivity::class.java))
+        startActivity(Intent(this, GeckoBrowserActivity::class.java))
     }
 
     private fun refreshStatus() {

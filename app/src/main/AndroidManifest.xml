@@ -58,6 +58,13 @@
             android:turnScreenOn="true"
             android:theme="@style/Theme.TTBS_HRMS.Alarm" />
 
+        <activity
+            android:name=".GeckoBrowserActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:label="TTBS-HRMS (Gecko test)"
+            android:launchMode="singleTop" />
+
         <receiver
             android:name=".AlarmReceiver"
             android:exported="false" />
