@@ -178,7 +178,7 @@ class LoginActivity : AppCompatActivity() {
         pbBreak.progress = ((used * 100) / (limit * 60L)).coerceIn(0L, 100L).toInt()
         // the footer goes amber while a break is running, so the state is visible at a glance
         breakFooter.setBackgroundColor(if (onBreak) 0x1FFFB020 else 0x05FFFFFF)
-        btnBreak.text = if (onBreak) "End" else "Start"
+        btnBreak.text = if (onBreak) "End break" else "Start break"
         btnBreak.backgroundTintList = android.content.res.ColorStateList.valueOf(
             if (onBreak) 0xFF0F766E.toInt() else 0xFFFFB020.toInt()
         )
