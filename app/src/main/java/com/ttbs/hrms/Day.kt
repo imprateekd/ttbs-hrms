@@ -53,11 +53,20 @@ object Day {
 
     /** Total time since punch in, breaks included. */
     fun inOfficeSecs(c: Context): Long {
-        val pin = secsOfDay(Cfg.punchIn(c)) ?: return 0L
-        val out = secsOfDay(Cfg.punchOut(c))
+        val pinRaw = Cfg.punchIn(c)
+        val pin = secsOfDay(pinRaw) ?: return 0L
+
+        // The portal sometimes repeats the punch-in value in the punch-out field; that is
+        // not a punch-out, so the clock must keep running.
+        val outRaw = Cfg.punchOut(c)
+        val out = if (outRaw.isNotBlank() && outRaw != pinRaw) secsOfDay(outRaw) else null
+
         val end = out ?: nowSecs()
-        val d = end - pin
-        return if (d < 0) 0L else d
+        var d = end - pin
+        // Punched in before midnight and still on the clock: the day-of-time went backwards,
+        // which used to clamp to zero and freeze the counter at 00:00:00.
+        if (d < 0) d += 86_400L
+        return d
     }
 
     /** What the strip shows: time at work with breaks taken out. */
