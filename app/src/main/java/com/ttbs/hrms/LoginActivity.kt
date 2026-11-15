@@ -54,6 +54,16 @@ class LoginActivity : AppCompatActivity() {
     private var sheet: BottomSheetDialog? = null
     private var permSheetView: View? = null
     private val signature = "by Prateek"
+    private val checkTimeout = Runnable {
+        if (Cfg.pendingReturn(this)) {
+            Cfg.setPendingReturn(this, false)
+            Notify.simple(
+                this,
+                "Check Login Time",
+                "Couldn't read your times — is the portal still logged in?"
+            )
+        }
+    }
 
     private val tick = object : Runnable {
         override fun run() {
@@ -134,6 +144,7 @@ class LoginActivity : AppCompatActivity() {
         Cfg.ensureToday(this)
         AlarmScheduler.scheduleMidnight(this)
         refreshStrip()
+        if (!Cfg.pendingReturn(this)) handler.removeCallbacks(checkTimeout)
         paintPermSheet()
         findViewById<View>(R.id.onboardCard).visibility =
             if (Cfg.onboarded(this)) View.GONE else View.VISIBLE
@@ -262,6 +273,9 @@ class LoginActivity : AppCompatActivity() {
         withPermissions {
             saveOrClear()
             openPortal()
+            // if the page never yields a reading, say so instead of leaving you in Chrome
+            handler.removeCallbacks(checkTimeout)
+            handler.postDelayed(checkTimeout, 35_000L)
         }
     }
 
@@ -277,6 +291,9 @@ class LoginActivity : AppCompatActivity() {
         withPermissions {
             saveOrClear()
             openPortal()
+            // if the page never yields a reading, say so instead of leaving you in Chrome
+            handler.removeCallbacks(checkTimeout)
+            handler.postDelayed(checkTimeout, 35_000L)
         }
     }
 

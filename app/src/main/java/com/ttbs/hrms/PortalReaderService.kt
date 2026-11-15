@@ -7,6 +7,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import java.text.SimpleDateFormat
@@ -24,6 +26,8 @@ class PortalReaderService : AccessibilityService() {
 
     private var lastSnapshot = ""
     private var lastLoginAttempt = 0L
+    private val handler = Handler(Looper.getMainLooper())
+    private var signInScheduled = false
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         val pkg = event?.packageName?.toString() ?: return
@@ -44,10 +48,13 @@ class PortalReaderService : AccessibilityService() {
         // dashboard guard below meant it was never reached - which is why the fields stayed empty.
         maybeAutoLogin(root, text)
 
-        if (text == lastSnapshot) return
+        // A second "Check Login Time" often lands on the exact same dashboard text.
+        // The snapshot guard used to return here, so the app was never brought back.
+        val unchanged = (text == lastSnapshot)
         lastSnapshot = text
 
         if (!text.contains("Punch", true)) return
+        if (unchanged && !Cfg.pendingReturn(this)) return
 
         val pin = timeAfter(text, Regex("Punch\\s*In\\b", RegexOption.IGNORE_CASE),
             Regex("Punch\\s*Out\\b", RegexOption.IGNORE_CASE))
@@ -105,18 +112,62 @@ class PortalReaderService : AccessibilityService() {
         if (setText(passwordNode, pass)) acted = true
         if (!acted) return
 
-        val button = findClickable(root, "Sign In to Account", 0)
-            ?: findClickable(root, "Sign In", 0)
-        if (button != null) {
-            button.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-            lastLoginAttempt = now
-            Cfg.setLastRead(
-                this,
-                "auto sign-in " + SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-            )
-        } else {
-            lastLoginAttempt = now
-        }
+        // Fields are filled the moment we see the form. The click waits, because Cloudflare's
+        // widget needs a few seconds and pressing early just fails the login.
+        lastLoginAttempt = now
+        scheduleSignIn(0)
+    }
+
+    /**
+     * Presses Sign In as soon as the captcha reports success, and never before.
+     * Falls back to 15 seconds if the widget exposes nothing we can read.
+     */
+    private fun scheduleSignIn(attempt: Int) {
+        if (signInScheduled && attempt == 0) return
+        signInScheduled = true
+        handler.postDelayed({
+            val root = rootInActiveWindow
+            if (root == null) {
+                signInScheduled = false
+                return@postDelayed
+            }
+            val sb = StringBuilder()
+            collect(root, sb, 0)
+            val pageText = sb.toString()
+
+            if (!pageText.contains("Sign In", true)) {
+                // already past the form - nothing to press
+                signInScheduled = false
+                return@postDelayed
+            }
+
+            val solved = captchaSolved(pageText)
+            val waitedEnough = attempt >= 10   // 10 x 1.5s = 15s
+
+            if (solved || waitedEnough) {
+                val button = findClickable(root, "Sign In to Account", 0)
+                    ?: findClickable(root, "Sign In", 0)
+                if (button != null) {
+                    button.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    Cfg.setLastRead(
+                        this,
+                        "auto sign-in " + SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                    )
+                }
+                signInScheduled = false
+            } else {
+                signInScheduled = false
+                scheduleSignIn(attempt + 1)
+            }
+        }, 1500L)
+    }
+
+    /** Turnstile usually exposes its state as text: "Success!" once the token is ready. */
+    private fun captchaSolved(pageText: String): Boolean {
+        val t = pageText.lowercase()
+        val success = t.contains("success") || t.contains("verified") || t.contains("verification complete")
+        val stillWaiting = t.contains("verify you are human") || t.contains("verifying")
+        return success && !stillWaiting
     }
 
     private fun setText(node: AccessibilityNodeInfo, value: String): Boolean {
