@@ -54,17 +54,6 @@ class LoginActivity : AppCompatActivity() {
     private var sheet: BottomSheetDialog? = null
     private var permSheetView: View? = null
     private val signature = "by Prateek"
-
-    private val checkTimeout = Runnable {
-        if (Cfg.pendingReturn(this)) {
-            Cfg.setPendingReturn(this, false)
-            Notify.simple(
-                this,
-                "Check Login Time",
-                "Couldn't read your times — is the portal still logged in?"
-            )
-        }
-    }
     private val checkTimeout = Runnable {
         if (Cfg.pendingReturn(this)) {
             Cfg.setPendingReturn(this, false)
@@ -283,10 +272,10 @@ class LoginActivity : AppCompatActivity() {
         if (!validateFields()) return
         withPermissions {
             saveOrClear()
-            openPortal()
-            // if the page never yields a reading, say so instead of leaving you in Chrome
+            // Signing in starts your working session: stay in the portal, do not come back.
+            Cfg.setPendingReturn(this, false)
             handler.removeCallbacks(checkTimeout)
-            handler.postDelayed(checkTimeout, 35_000L)
+            openPortal()
         }
     }
 
@@ -301,8 +290,9 @@ class LoginActivity : AppCompatActivity() {
         }
         withPermissions {
             saveOrClear()
+            // Only the check brings you back here once the times have been read.
+            Cfg.setPendingReturn(this, true)
             openPortal()
-            // if the page never yields a reading, say so instead of leaving you in Chrome
             handler.removeCallbacks(checkTimeout)
             handler.postDelayed(checkTimeout, 35_000L)
         }
